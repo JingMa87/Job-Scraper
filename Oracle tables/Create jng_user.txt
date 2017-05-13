@@ -1,0 +1,47 @@
+-- Create table
+create table JNG_USER
+(
+  user_id          NUMBER not null,
+  jng_usr_username VARCHAR2(20) not null,
+  jng_usr_password VARCHAR2(100) not null
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table JNG_USER
+  add constraint JNG_USER_PK primary key (USER_ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table JNG_USER
+  add constraint JNG_USER_UQ unique (JNG_USR_USERNAME)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );

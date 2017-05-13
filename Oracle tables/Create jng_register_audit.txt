@@ -1,0 +1,36 @@
+-- Create table
+create table JNG_REGISTER_AUDIT
+(
+  user_id      NUMBER not null,
+  rga_time     VARCHAR2(25) not null,
+  rga_dba_user VARCHAR2(20) not null
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table JNG_REGISTER_AUDIT
+  add constraint JNG_REGISTER_AUDIT_PK primary key (USER_ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table JNG_REGISTER_AUDIT
+  add constraint JNG_REGISTER_AUDIT_FK foreign key (USER_ID)
+  references JNG_USER (USER_ID) on delete cascade;

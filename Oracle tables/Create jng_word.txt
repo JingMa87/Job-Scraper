@@ -1,0 +1,47 @@
+-- Create table
+create table JNG_WORD
+(
+  word_id      NUMBER not null,
+  wrd_word     VARCHAR2(20) not null,
+  wrd_is_palin VARCHAR2(3)
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table JNG_WORD
+  add constraint JNG_WORD_PK primary key (WORD_ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table JNG_WORD
+  add constraint JNG_WORD_UQ unique (WRD_WORD)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );

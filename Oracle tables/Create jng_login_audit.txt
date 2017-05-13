@@ -1,0 +1,37 @@
+-- Create table
+create table JNG_LOGIN_AUDIT
+(
+  login_audit_id NUMBER not null,
+  lga_time       VARCHAR2(25) not null,
+  lga_dba_user   VARCHAR2(20) not null,
+  lga_user_id    NUMBER not null
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table JNG_LOGIN_AUDIT
+  add constraint JNG_LOGIN_AUDIT_PK primary key (LOGIN_AUDIT_ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table JNG_LOGIN_AUDIT
+  add constraint JNG_LOGIN_AUDIT_FK foreign key (LGA_USER_ID)
+  references JNG_USER (USER_ID) on delete cascade;
