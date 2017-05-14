@@ -1,11 +1,13 @@
 package com.wixsite.jingmacv.controller;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.wixsite.jingmacv.model.DBConnection;
 
@@ -19,7 +21,8 @@ public class RegisterServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		String status = DBConnection.registerUsernamePassword(username, password);
 	    if (status == "registered") {
-	    	request.setAttribute("username", username);
+	    	HttpSession session = request.getSession();
+	    	session.setAttribute("username", username);
 	    	request.getRequestDispatcher("index.jsp").forward(request, response);
 	    }
 	    else if (status == "uniqueConstraint") {
