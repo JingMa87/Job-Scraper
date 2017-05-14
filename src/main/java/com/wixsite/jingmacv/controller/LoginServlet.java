@@ -20,7 +20,6 @@ public class LoginServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		if (conn.checkUsernamePassword(username, password)) {
-			//request.getRequestDispatcher("WEB-INF/view/data.jsp").forward(request, response);
 			response.sendRedirect("add-words");
 		}
 		else
