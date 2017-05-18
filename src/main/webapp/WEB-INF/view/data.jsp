@@ -26,7 +26,7 @@
 			   <th>Number</th>
 			   <th>Word</th>
 			   <th>Is palindrome?</th>
-			</tr>
+			</tr> 
 			<c:forEach items="${words}" var="word">
 			<tr>
 			   <td><c:out value="${word.word_id}"/></td>

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class DBConnection {
 
 	// JDBC database URL.
-	private final String DB_URL = "jdbc:oracle:thin:jing/jing@localhost:1521:xe";
+	private final String DB_URL = "jdbc:oracle:thin:Jing/jing@localhost:1521:xe";
 	// Connection objects.
 	private static Connection conn;
 	private static Statement stmt;
@@ -52,7 +52,7 @@ public class DBConnection {
 	    	match = username.equals(dbUsername) && BCrypt.checkpw(password, dbPassword);
 		    if (match) {
 		    	ppsm = conn.prepareStatement("INSERT INTO jng_login_audit (login_audit_id, lga_time, lga_dba_user, lga_user_id)" +
-		    						   "VALUES ((SELECT COUNT(*)+1 FROM jng_login_audit), TO_CHAR(SYSDATE, 'DD/MM/YYYY, HH:MI:SS AM')," + 
+		    						   "VALUES ((SELECT NVL(MAX(login_audit_id) + 1, 1) FROM jng_login_audit), TO_CHAR(SYSDATE, 'DD/MM/YYYY, HH:MI:SS AM')," + 
 		    						   "(SELECT USER FROM dual), (SELECT user_id FROM jng_user WHERE jng_usr_username = ?))");
 		    	ppsm.setString(1, username);
 		    	ppsm.executeUpdate();
@@ -72,7 +72,7 @@ public class DBConnection {
 			password = BCrypt.hashpw(password, BCrypt.gensalt());
 	    	
 	    	// Insert username and password into database.
-	    	ppsm = conn.prepareStatement("INSERT INTO jng_user (user_id, jng_usr_username, jng_usr_password) VALUES ((SELECT COUNT(*)+1 FROM jng_user), ?, ?)");
+	    	ppsm = conn.prepareStatement("INSERT INTO jng_user (user_id, jng_usr_username, jng_usr_password) VALUES ((SELECT NVL(MAX(user_id) + 1, 1) FROM jng_user), ?, ?)");
 	    	ppsm.setString(1, username);
 	    	ppsm.setString(2, password);
 	    	ppsm.executeUpdate();
@@ -97,7 +97,7 @@ public class DBConnection {
 		String status = null;
 		try {
 			// Calls the insert_word procedure from the jng_word_pk package.
-			ppsm = conn.prepareStatement("INSERT INTO jng_word (word_id, wrd_word, wrd_is_palin) VALUES ((SELECT COUNT(*)+1 FROM jng_word), ?, ?)");
+			ppsm = conn.prepareStatement("INSERT INTO jng_word (word_id, wrd_word, wrd_is_palin) VALUES ((SELECT NVL(MAX(word_id) + 1, 1) FROM jng_word), ?, ?)");
 			ppsm.setString(1, word);
 			ppsm.setString(2, PalindromeChecker.isPalindrome(word));
 			ppsm.executeUpdate();
