@@ -1,0 +1,48 @@
+-- Create table
+create table JNG_VACANCY
+(
+  vacancy_id    NUMBER not null,
+  vcn_job_title VARCHAR2(50) not null,
+  vcn_company   VARCHAR2(50),
+  vcn_location  VARCHAR2(40) not null
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table JNG_VACANCY
+  add constraint JNG_VACANCY_PK primary key (VACANCY_ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table JNG_VACANCY
+  add constraint JNG_VACANCY_UQ unique (VCN_JOB_TITLE, VCN_COMPANY, VCN_LOCATION)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
