@@ -92,37 +92,41 @@ public class DBConnection {
 		return status;
 	}
 	
-	// Adds a word to the jng_word table.
-	public static String addWord(String word) {
+	// Adds a vacancy object to the database.
+	public static String saveVacancy(String jobTitle, String company, String location) {
 		String status = null;
 		try {
-			// Calls the insert_word procedure from the jng_word_pk package.
-			ppsm = conn.prepareStatement("INSERT INTO jng_word (word_id, wrd_word, wrd_is_palin) VALUES ((SELECT NVL(MAX(word_id) + 1, 1) FROM jng_word), ?, ?)");
-			ppsm.setString(1, word);
-			ppsm.setString(2, PalindromeChecker.isPalindrome(word));
-			ppsm.executeUpdate();
-			status = "wordAdded";
-		} catch(SQLException se) {
-			se.printStackTrace();
-			status = "wordAlreadyInList";
-		}
+			// Insert vacancy into database.
+	    	ppsm = conn.prepareStatement("INSERT INTO jng_vacancy (vacancy_id, vcn_job_title, vcn_company, vcn_location) VALUES ((SELECT NVL(MAX(vacancy_id) + 1, 1) FROM jng_vacancy), ?, ?, ?)");
+	    	ppsm.setString(1, jobTitle);
+	    	ppsm.setString(2, company);
+	    	ppsm.setString(3, location);
+	    	ppsm.executeUpdate();
+	    	status = "registered";
+	    } catch(SQLIntegrityConstraintViolationException se) {
+	    	status = "uniqueConstraint"; 
+	    	se.printStackTrace();
+	    } catch(SQLException se) {
+	    	status = "incorrectUsernamePassword";
+	    	se.printStackTrace();
+	    }
 		return status;
 	}
 	
-	public static ArrayList<Jng_word> setResultSet() {
-		ArrayList<Jng_word> words = new ArrayList<Jng_word>();
+	public static ArrayList<Vacancy> setResultSet() {
+		ArrayList<Vacancy> vacancies = new ArrayList<Vacancy>();
 		try {
-	    	// Inserts word_id, wrd_word, wrd_is_palin into the ResultSet.
-	    	String sqlGetData = "SELECT word_id, wrd_word, wrd_is_palin FROM JNG_WORD ORDER BY word_id";
+	    	// Retrieves vacancy objects into the ResultSet.
+	    	String sqlGetData = "SELECT vacancy_id, vcn_job_title, vcn_company, vcn_location FROM jng_vacancy ORDER BY vacancy_id";
 	    	rs = stmt.executeQuery(sqlGetData);
 	    	while(rs.next()) {
-	            Jng_word word = new Jng_word(rs.getInt(1), rs.getString(2), rs.getString(3));
-	            words.add(word);
+	            Vacancy vacancy = new Vacancy(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+	            vacancies.add(vacancy);
 	    	}
 	    } catch(SQLException se) {
 	    	se.printStackTrace();
 	    }
-		return words;
+		return vacancies;
 	}
 	
 	// Closes Connection, Statement and ResultSet.

@@ -8,7 +8,8 @@
 	<body>				 
 		<h1>Good day!</h1>
 		<form action="add-words" method="get">
-			<input type="text" name="word" placeholder="Add a word..."></input>
+			<input type="text" name="jobTitle" placeholder="Add a job title..."></input>
+			<input type="text" name="location" placeholder="Add a location..."></input><br>
 			<button type="submit">Add</button><br>
 		</form>
 		<form action="generate-document" method="post">
@@ -23,15 +24,17 @@
 		<p style="color:red;">${emptyField}</p>		
 		<table border="1" style="width:500px">
 			<tr>
-			   <th>Number</th>
-			   <th>Word</th>
-			   <th>Is palindrome?</th>
+				<th>Vacancy ID</th>
+				<th>Job title</th>
+			   	<th>Company</th>
+			   	<th>Location</th>
 			</tr> 
-			<c:forEach items="${words}" var="word">
+			<c:forEach items="${vacancies}" var="vacancy">
 			<tr>
-			   <td><c:out value="${word.word_id}"/></td>
-			   <td><c:out value="${word.wrd_word}"/></td>
-			   <td><c:out value="${word.wrd_is_palin}"/></td>
+				<td><c:out value="${vacancy.vacancyID}"/></td>
+			   	<td><c:out value="${vacancy.jobTitle}"/></td>
+			   	<td><c:out value="${vacancy.company}"/></td>
+			   	<td><c:out value="${vacancy.location}"/></td>
 			</tr>
 			</c:forEach>
 		</table>

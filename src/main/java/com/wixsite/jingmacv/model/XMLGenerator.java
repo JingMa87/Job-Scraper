@@ -20,16 +20,17 @@ public class XMLGenerator {
         try {
         	docBuilder = docBuildFactory.newDocumentBuilder();
             Document doc = docBuilder.newDocument();
-            Element mainRootElement = doc.createElementNS("http://jingmacv.wixsite.com/home", "palindromes");
+            Element mainRootElement = doc.createElementNS("http://jingmacv.wixsite.com/home", "vacancies");
             doc.appendChild(mainRootElement);
  
-            ArrayList<Jng_word> words = DBConnection.setResultSet();
+            ArrayList<Vacancy> vacancies = DBConnection.setResultSet();
             // Appends child elements to root element.
-            for(Jng_word word : words) {
-            	int word_id = word.getWord_id();	            
-	            String wrd_word = word.getWrd_word();	            
-	            String wrd_is_palin = word.getWrd_is_palin();
-	            addPalin(mainRootElement, doc, word_id, wrd_word, wrd_is_palin);
+            for(Vacancy vacancy : vacancies) {
+            	int vacancyID = vacancy.getVacancyID();	            
+	            String jobTitle = vacancy.getJobTitle();	            
+	            String company = vacancy.getCompany();            
+	            String location = vacancy.getLocation();
+	            addVacancy(mainRootElement, doc, vacancyID, jobTitle, company, location);
             }
  
             // Generates an XML file.
@@ -45,20 +46,24 @@ public class XMLGenerator {
         return true;
     }
 	
-	private static void addPalin(Element mainRootElement, Document doc, int words_id, String wrd_word, String wrd_is_palin) {
-		Element palin = doc.createElement("palindrome");
-        mainRootElement.appendChild(palin);
+	private static void addVacancy(Element mainRootElement, Document doc, int vacancyID, String jobTitle, String company, String location) {
+		Element vacancy = doc.createElement("vacancy");
+        mainRootElement.appendChild(vacancy);
   
-        Element number = doc.createElement("number");
-        number.appendChild(doc.createTextNode(Integer.toString(words_id)));
-        palin.appendChild(number);
+        Element vacancyIDElement = doc.createElement("vacancyID");
+        vacancyIDElement.appendChild(doc.createTextNode(Integer.toString(vacancyID)));
+        vacancy.appendChild(vacancyIDElement);
   
-        Element word = doc.createElement("word");
-        word.appendChild(doc.createTextNode(wrd_word));
-        palin.appendChild(word);
+        Element jobTitleElement = doc.createElement("jobTitle");
+        jobTitleElement.appendChild(doc.createTextNode(jobTitle));
+        vacancy.appendChild(jobTitleElement);
+  
+        Element companyElement = doc.createElement("company");
+        companyElement.appendChild(doc.createTextNode(company));
+        vacancy.appendChild(companyElement);
         
-        Element isPalin = doc.createElement("isPalindrome");
-        isPalin.appendChild(doc.createTextNode(wrd_is_palin));
-        palin.appendChild(isPalin);
+        Element locationElement = doc.createElement("location");
+        locationElement.appendChild(doc.createTextNode(location));
+        vacancy.appendChild(locationElement);
 	}
 }

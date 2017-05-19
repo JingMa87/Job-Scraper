@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.wixsite.jingmacv.model.DBConnection;
-import com.wixsite.jingmacv.model.Jng_word;
+import com.wixsite.jingmacv.model.Vacancy;
+import com.wixsite.jingmacv.model.WebScraper;
 
 @WebServlet("/add-words")
 public class AddWordsServlet extends HttpServlet {
@@ -19,23 +20,21 @@ public class AddWordsServlet extends HttpServlet {
 	
 	@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String status = null;
-		String word = request.getParameter("word");
-		if (word == "") {
+		String jobTitle = request.getParameter("jobTitle");
+		String location = request.getParameter("location");
+		if (jobTitle.equals("") || location.equals("")) {
 			request.setAttribute("emptyField", "Fill in a word.");
 		}
-		else if (word != null) {			
-			status = DBConnection.addWord(word);
-			if (status.equals("wordAdded")) {
-				request.setAttribute("wordAdded", "Word added.");
-			}
-			else {
-				request.setAttribute("wordAlreadyInList", "This word is already in the list.");
+		else if (jobTitle != null && location != null) {			
+			try {
+				WebScraper.scrape(jobTitle, location);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
-		ArrayList<Jng_word> words = DBConnection.setResultSet();
-		// Will be available as ${words} in JSP.
-		request.setAttribute("words", words);
+		ArrayList<Vacancy> vacancies = DBConnection.setResultSet();
+		// Will be available as ${vacancies} in JSP.
+		request.setAttribute("vacancies", vacancies);
 		// Redirects user to index.jsp.
 		request.getRequestDispatcher("WEB-INF/view/data.jsp").forward(request, response);
     }

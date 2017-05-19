@@ -24,18 +24,22 @@ public class PDFGenerator {
 	        // Generates a table cell.
 	        PdfPCell cell = null;
 	        
-	        ArrayList<Jng_word> words = DBConnection.setResultSet();
-	        for (Jng_word word : words) {
-	        	int word_id = word.getWord_id();
-	        	cell = new PdfPCell(new Phrase(Integer.toString(word_id)));
+	        ArrayList<Vacancy> vacancies = DBConnection.setResultSet();
+	        for (Vacancy vacancy : vacancies) {
+	        	int vacancy_id = vacancy.getVacancyID();
+	        	cell = new PdfPCell(new Phrase(Integer.toString(vacancy_id)));
 	            table.addCell(cell);
 	            
-	            String wrd_word = word.getWrd_word();
-	            cell = new PdfPCell(new Phrase(wrd_word));
+	            String jobTitle = vacancy.getJobTitle();
+	            cell = new PdfPCell(new Phrase(jobTitle));
 	            table.addCell(cell);
 	            
-	            String wrd_is_palin = word.getWrd_is_palin();
-	            cell = new PdfPCell(new Phrase(wrd_is_palin));
+	            String company = vacancy.getCompany();
+	            cell = new PdfPCell(new Phrase(company));
+	            table.addCell(cell);
+	            
+	            String location = vacancy.getLocation();
+	            cell = new PdfPCell(new Phrase(location));
 	            table.addCell(cell);
 	        }	    	
             // Adds the table to the PDF.
