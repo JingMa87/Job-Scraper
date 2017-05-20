@@ -26,9 +26,9 @@ public class GenerateDocumentServlet extends HttpServlet {
 			request.setAttribute("pdfDownloaded", "PDF successfully downloaded.");
 		}
 		else {
-			request.setAttribute("error", "Something went wrong.");
+			request.setAttribute("documentError", "Something went wrong.");
 		}
-		request.getRequestDispatcher("add-words").forward(request, response);
+		request.getRequestDispatcher("web-scrape").forward(request, response);
 	}
 
 }

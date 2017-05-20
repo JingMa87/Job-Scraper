@@ -23,7 +23,7 @@ public class XMLGenerator {
             Element mainRootElement = doc.createElementNS("http://jingmacv.wixsite.com/home", "vacancies");
             doc.appendChild(mainRootElement);
  
-            ArrayList<Vacancy> vacancies = DBConnection.setResultSet();
+            ArrayList<Vacancy> vacancies = DBConnection.getResultSet();
             // Appends child elements to root element.
             for(Vacancy vacancy : vacancies) {
             	int vacancyID = vacancy.getVacancyID();	            

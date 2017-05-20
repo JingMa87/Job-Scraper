@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class DBConnection {
 
 	// JDBC database URL.
-	private final String DB_URL = "jdbc:oracle:thin:Jing/jing@localhost:1521:xe";
+	private final String DB_URL = "jdbc:oracle:thin:jing/jing@localhost:1521:xe";
 	// Connection objects.
 	private static Connection conn;
 	private static Statement stmt;
@@ -52,7 +52,7 @@ public class DBConnection {
 	    	match = username.equals(dbUsername) && BCrypt.checkpw(password, dbPassword);
 		    if (match) {
 		    	ppsm = conn.prepareStatement("INSERT INTO jng_login_audit (login_audit_id, lga_time, lga_dba_user, lga_user_id)" +
-		    						   "VALUES ((SELECT NVL(MAX(login_audit_id) + 1, 1) FROM jng_login_audit), TO_CHAR(SYSDATE, 'DD/MM/YYYY, HH:MI:SS AM')," + 
+		    						   "VALUES ((SELECT NVL(MAX(login_audit_id) + 1, 1) FROM jng_login_audit), TO_CHAR(SYSDATE, 'DD/MM/YYYY HH:MI:SSAM')," + 
 		    						   "(SELECT USER FROM dual), (SELECT user_id FROM jng_user WHERE jng_usr_username = ?))");
 		    	ppsm.setString(1, username);
 		    	ppsm.executeUpdate();
@@ -78,7 +78,7 @@ public class DBConnection {
 	    	ppsm.executeUpdate();
 	    	
 	    	ppsm = conn.prepareStatement("INSERT INTO jng_register_audit (user_id, rga_time, rga_dba_user) VALUES " +
-	    	"((SELECT user_id FROM jng_user WHERE jng_usr_username = ?), TO_CHAR(SYSDATE, 'DD/MM/YYYY, HH:MI:SS AM'), (SELECT USER FROM dual))");
+	    	"((SELECT user_id FROM jng_user WHERE jng_usr_username = ?), TO_CHAR(SYSDATE, 'DD/MM/YYYY HH:MI:SSAM'), (SELECT USER FROM dual))");
 			ppsm.setString(1, username);
 			ppsm.executeUpdate();
 	    	status = "registered";
@@ -102,18 +102,18 @@ public class DBConnection {
 	    	ppsm.setString(2, company);
 	    	ppsm.setString(3, location);
 	    	ppsm.executeUpdate();
-	    	status = "registered";
+	    	status = "saved";
 	    } catch(SQLIntegrityConstraintViolationException se) {
-	    	status = "uniqueConstraint"; 
+	    	status = "saved";
 	    	se.printStackTrace();
 	    } catch(SQLException se) {
-	    	status = "incorrectUsernamePassword";
+	    	status = "databaseError";
 	    	se.printStackTrace();
 	    }
 		return status;
 	}
 	
-	public static ArrayList<Vacancy> setResultSet() {
+	public static ArrayList<Vacancy> getResultSet() {
 		ArrayList<Vacancy> vacancies = new ArrayList<Vacancy>();
 		try {
 	    	// Retrieves vacancy objects into the ResultSet.
@@ -127,6 +127,15 @@ public class DBConnection {
 	    	se.printStackTrace();
 	    }
 		return vacancies;
+	}
+	
+	public static void resetTable() {
+		String sqlResetTable = "DELETE FROM jng_vacancy";
+		try {
+			stmt.executeQuery(sqlResetTable);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	// Closes Connection, Statement and ResultSet.

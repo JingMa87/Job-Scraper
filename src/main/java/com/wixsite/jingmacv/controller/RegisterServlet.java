@@ -23,7 +23,7 @@ public class RegisterServlet extends HttpServlet {
 	    if (status == "registered") {
 	    	HttpSession session = request.getSession();
 	    	session.setAttribute("username", username);
-	    	request.getRequestDispatcher("index.jsp").forward(request, response);
+	    	request.getRequestDispatcher("login.jsp").forward(request, response);
 	    }
 	    else if (status == "uniqueConstraint") {
 	    	request.setAttribute("uniqueConstraint", "Username and password already exist.");

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -19,12 +21,22 @@ public class PDFGenerator {
 			String myHome = System.getenv("userprofile");
 			PdfWriter.getInstance(doc, new FileOutputStream(myHome + "/Downloads/Oracle2PDF.pdf"));
 	        doc.open();
-	        // Generates a table with three columns.
-	        PdfPTable table = new PdfPTable(3);
+	        // Generates a table with n columns.
+	        PdfPTable table = new PdfPTable(4);
 	        // Generates a table cell.
 	        PdfPCell cell = null;
+	        // Adds headers to the columns.
+	        Font bold = new Font(FontFamily.UNDEFINED, 12, Font.BOLD);
+            cell = new PdfPCell(new Phrase("Vacancy ID", bold));
+            table.addCell(cell);
+            cell = new PdfPCell(new Phrase("Job Title", bold));
+            table.addCell(cell);
+            cell = new PdfPCell(new Phrase("Company", bold));
+            table.addCell(cell);
+            cell = new PdfPCell(new Phrase("Location", bold));
+            table.addCell(cell);
 	        
-	        ArrayList<Vacancy> vacancies = DBConnection.setResultSet();
+	        ArrayList<Vacancy> vacancies = DBConnection.getResultSet();
 	        for (Vacancy vacancy : vacancies) {
 	        	int vacancy_id = vacancy.getVacancyID();
 	        	cell = new PdfPCell(new Phrase(Integer.toString(vacancy_id)));

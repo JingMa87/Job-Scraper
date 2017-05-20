@@ -19,9 +19,9 @@
 		</dependency>
 	
 		<dependency>
-    		<groupId>com.oracle</groupId>
-    		<artifactId>ojdbc6</artifactId>
-    		<version>11.2.0</version>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0</version>
 		</dependency>
 		
 		<dependency>
@@ -58,7 +58,13 @@
     		<groupId>org.seleniumhq.selenium</groupId>
     		<artifactId>selenium-java</artifactId>
     		<version>3.4.0</version>
-		</dependency>				
+		</dependency>
+    	
+    	<dependency>
+    		<groupId>com.codeborne</groupId>
+    		<artifactId>phantomjsdriver</artifactId>
+    		<version>1.4.2</version>
+		</dependency>
 	</dependencies>
 		
 	<build>
