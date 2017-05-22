@@ -6,6 +6,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.wixsite.jingmacv.model.PDFGenerator;
 import com.wixsite.jingmacv.model.XMLGenerator;
@@ -15,8 +16,9 @@ public class GenerateDocumentServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String documentType = request.getParameter("generateButton");
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// Checks for the type of button pressed (XML or PDF) and generates the document.
+		String documentType = request.getParameter("generate");
 		if (documentType.equals("XML")) {
 			XMLGenerator.generateXML();
 			request.setAttribute("xmlDownloaded", "XML successfully downloaded.");
@@ -28,6 +30,12 @@ public class GenerateDocumentServlet extends HttpServlet {
 		else {
 			request.setAttribute("documentError", "Something went wrong.");
 		}
+		// Puts the job title and location in the input fields.
+		HttpSession session = request.getSession();
+		String jobTitle = (String) session.getAttribute("jobTitle");
+		String location = (String) session.getAttribute("location");
+		request.setAttribute("jobTitle", jobTitle);
+		request.setAttribute("location", location);
 		request.getRequestDispatcher("web-scrape").forward(request, response);
 	}
 

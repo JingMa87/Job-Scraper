@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.wixsite.jingmacv.model.DBConnection;
 import com.wixsite.jingmacv.model.Vacancy;
@@ -23,24 +24,30 @@ public class WebScrapeServlet extends HttpServlet {
 		String jobTitle = request.getParameter("jobTitle");
 		String location = request.getParameter("location");
 		String status = null;
-//		if (jobTitle.equals("") || location.equals("")) {
-//			request.setAttribute("emptyField", "Fill in both fields.");
-//		}
-		if (jobTitle != null && location != null) {			
-			status = WebScraper.scrape(jobTitle, location);
-			if (status == "saved") {
-				request.setAttribute("successCrawl", "Successfully scraped.");
+		
+		if (jobTitle != null && location != null) {
+			if (jobTitle.equals("") || location.equals("")) {
+				request.setAttribute("emptyField", "Fill in both fields.");
 			}
 			else {
-				request.setAttribute("databaseError", "Something went wrong in the database.");
+				status = WebScraper.scrape(jobTitle, location);
+				if (status == "saved") {
+					request.setAttribute("successCrawl", "Successfully scraped.");
+				}
+				else {
+					request.setAttribute("databaseError", "No data has been scraped.");
+				}
 			}
 		}
 		ArrayList<Vacancy> vacancies = DBConnection.getResultSet();
 		// Will be available as ${vacancies} in JSP.
 		request.setAttribute("vacancies", vacancies);
-		// Set values in the input fields.
-		request.setAttribute("jobTitle", jobTitle);
-		request.setAttribute("location", location);
+		// Set values for the input fields.
+		if (jobTitle != null && location != null) {
+			HttpSession session = request.getSession();
+	    	session.setAttribute("jobTitle", jobTitle);
+	    	session.setAttribute("location", location);
+		}
 		// Redirects user to index.jsp.
 		request.getRequestDispatcher("WEB-INF/view/webScrape.jsp").forward(request, response);
     }

@@ -1,47 +1,15 @@
--- Create table
-create table JNG_USER
-(
-  user_id          NUMBER not null,
-  jng_usr_username VARCHAR2(20) not null,
-  jng_usr_password VARCHAR2(100) not null
-)
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
--- Create/Recreate primary, unique and foreign key constraints 
-alter table JNG_USER
-  add constraint JNG_USER_PK primary key (USER_ID)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table JNG_USER
-  add constraint JNG_USER_UQ unique (JNG_USR_USERNAME)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
+CREATE TABLE "JNG_USER" 
+(	
+"USER_ID" NUMBER NOT NULL ENABLE, 
+"JNG_USR_USERNAME" VARCHAR2(20 CHAR) NOT NULL ENABLE, 
+"JNG_USR_PASSWORD" VARCHAR2(100 CHAR) NOT NULL ENABLE, 
+CONSTRAINT "JNG_USER_PK" PRIMARY KEY ("USER_ID")
+USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+TABLESPACE "USERS"  ENABLE
+) SEGMENT CREATION IMMEDIATE 
+PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+TABLESPACE "USERS" ;

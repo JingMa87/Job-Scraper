@@ -1,37 +1,16 @@
--- Create table
-create table JNG_LOGIN_AUDIT
-(
-  login_audit_id NUMBER not null,
-  lga_time       VARCHAR2(25) not null,
-  lga_dba_user   VARCHAR2(20) not null,
-  lga_user_id    NUMBER not null
-)
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
--- Create/Recreate primary, unique and foreign key constraints 
-alter table JNG_LOGIN_AUDIT
-  add constraint JNG_LOGIN_AUDIT_PK primary key (LOGIN_AUDIT_ID)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table JNG_LOGIN_AUDIT
-  add constraint JNG_LOGIN_AUDIT_FK foreign key (LGA_USER_ID)
-  references JNG_USER (USER_ID) on delete cascade;
+CREATE TABLE "JNG_LOGIN_AUDIT" 
+(	
+"LOGIN_AUDIT_ID" NUMBER NOT NULL ENABLE, 
+"LGA_TIME" VARCHAR2(25 CHAR) NOT NULL ENABLE, 
+"LGA_DBA_USER" VARCHAR2(20 CHAR) NOT NULL ENABLE, 
+"LGA_USER_ID" NUMBER NOT NULL ENABLE, 
+CONSTRAINT "JNG_LOGIN_AUDIT_PK" PRIMARY KEY ("LOGIN_AUDIT_ID")
+USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+TABLESPACE "USERS"  ENABLE
+) SEGMENT CREATION IMMEDIATE 
+PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING
+STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+TABLESPACE "USERS" ;

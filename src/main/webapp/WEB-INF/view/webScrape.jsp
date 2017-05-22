@@ -2,7 +2,7 @@
 <!DOCTYPE html> 
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Data</title>
 	</head>
 	<body>				 
@@ -12,9 +12,9 @@
 			<input type="text" name="location" placeholder="Add a location..." value="${location}"></input>
 			<button type="submit">Scrape</button><br>
 		</form><br>
-		<form action="generate-document" method="post">
-			<button name="generateButton" value="XML" type="submit">XML</button>
-			<button name="generateButton" value="PDF" type="submit">PDF</button><br>
+		<form action="generate-document" method="get">
+			<button name="generate" value="XML" type="submit">XML</button>
+			<button name="generate" value="PDF" type="submit">PDF</button><br>
 		</form>
 		<p style="color:red;">${emptyField}</p>
 		<p style="color:green;">${successCrawl}</p>
