@@ -24,6 +24,9 @@ public class WebScrapeServlet extends HttpServlet {
 		String jobTitle = request.getParameter("jobTitle");
 		String location = request.getParameter("location");
 		String status = null;
+		// Show the table in webScrape.jsp.
+		boolean scraped = true;
+		request.setAttribute("scraped", scraped);
 		
 		if (jobTitle != null && location != null) {
 			if (jobTitle.equals("") || location.equals("")) {
@@ -32,15 +35,22 @@ public class WebScrapeServlet extends HttpServlet {
 			else {
 				status = WebScraper.scrape(jobTitle, location);
 				if (status == "saved") {
-					request.setAttribute("successCrawl", "Successfully scraped.");
+					request.setAttribute("successScrape", "Successfully scraped.");
 				}
 				else {
-					request.setAttribute("databaseError", "No data has been scraped.");
+					request.setAttribute("noData", "No data has been scraped.");
 				}
 			}
 		}
+		// Makes a list of headers to generate table headers in webScrape.jsp.
+		ArrayList<String> headers = new ArrayList<>();
+		headers.add("Vacancy ID");
+		headers.add("Job title");
+		headers.add("Company");
+		headers.add("Location");
+		request.setAttribute("headers", headers);
+		// Retrieves vacancy data from the database and makes it available in webScrape.jsp.
 		ArrayList<Vacancy> vacancies = DBConnection.getResultSet();
-		// Will be available as ${vacancies} in JSP.
 		request.setAttribute("vacancies", vacancies);
 		// Set values for the input fields.
 		if (jobTitle != null && location != null) {

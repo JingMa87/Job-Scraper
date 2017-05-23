@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class DBConnection {
 
 	// JDBC database URL.
-	private final String DB_URL = "jdbc:oracle:thin:jing/jing@localhost:1521:xe";
+	private final String DB_URL = "jdbc:oracle:thin:Jing/jing@localhost:1521:xe";
 	// Connection objects.
 	private static Connection conn;
 	private static Statement stmt;
@@ -95,9 +95,11 @@ public class DBConnection {
 	// Adds a vacancy object to the database.
 	public static String saveVacancy(String jobTitle, String company, String location) {
 		String status = null;
+		PreparedStatement ppsm = null;
 		try {
 			// Insert vacancy into database.
-	    	ppsm = conn.prepareStatement("INSERT INTO jng_vacancy (vacancy_id, vcn_job_title, vcn_company, vcn_location) VALUES ((SELECT NVL(MAX(vacancy_id) + 1, 1) FROM jng_vacancy), ?, ?, ?)");
+	    	ppsm = conn.prepareStatement("INSERT INTO jng_vacancy (vacancy_id, vcn_job_title, vcn_company, vcn_location) " +
+	    								 "VALUES ((SELECT NVL(MAX(vacancy_id) + 1, 1) FROM jng_vacancy), ?, ?, ?)");
 	    	ppsm.setString(1, jobTitle);
 	    	ppsm.setString(2, company);
 	    	ppsm.setString(3, location);
@@ -107,14 +109,20 @@ public class DBConnection {
 	    	status = "saved";
 	    	se.printStackTrace();
 	    } catch(SQLException se) {
-	    	status = "databaseError";
+	    	status = "noData";
 	    	se.printStackTrace();
+	    } finally {
+	    	try {
+				ppsm.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			};
 	    }
 		return status;
 	}
 	
 	public static ArrayList<Vacancy> getResultSet() {
-		ArrayList<Vacancy> vacancies = new ArrayList<Vacancy>();
+		ArrayList<Vacancy> vacancies = new ArrayList<>();
 		try {
 	    	// Retrieves vacancy objects into the ResultSet.
 	    	String sqlGetData = "SELECT vacancy_id, vcn_job_title, vcn_company, vcn_location FROM jng_vacancy ORDER BY vacancy_id";

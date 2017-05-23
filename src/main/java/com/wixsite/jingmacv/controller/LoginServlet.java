@@ -23,7 +23,7 @@ public class LoginServlet extends HttpServlet {
 		if (conn.checkUsernamePassword(username, password)) {
 			HttpSession session = request.getSession();
 	    	session.setAttribute("username", username);
-	    	request.getRequestDispatcher("web-scrape").forward(request, response);
+	    	request.getRequestDispatcher("WEB-INF/view/webScrape.jsp").forward(request, response);
 		}
 		else
 			request.getRequestDispatcher("WEB-INF/view/register.jsp").forward(request, response);
