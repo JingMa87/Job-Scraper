@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class DBConnection {
 
 	// JDBC database URL.
-	private final String DB_URL = "jdbc:oracle:thin:Jing/jing@localhost:1521:xe";
+	private final String DB_URL = "jdbc:oracle:thin:jing/jing@localhost:1521:xe";
 	// Connection objects.
 	private static Connection conn;
 	private static Statement stmt;
