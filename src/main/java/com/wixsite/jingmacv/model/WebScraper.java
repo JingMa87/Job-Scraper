@@ -6,10 +6,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
+//import org.openqa.selenium.phantomjs.PhantomJSDriver;
+//import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 
 public class WebScraper {
 	
@@ -24,12 +22,7 @@ public class WebScraper {
 //		WebDriver driver = new PhantomJSDriver(caps);
 		
 		System.setProperty("webdriver.chrome.driver", "C:/Program Files (x86)/chromedriver_win32/chromedriver.exe");
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("test-type");
-		options.addArguments("disable-popup-blocking");
-		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-		capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-		WebDriver driver = new ChromeDriver(capabilities);
+		WebDriver driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		driver.get("https://www.indeed.nl/?r=us");
 		// Finding and filling in input field "what".
