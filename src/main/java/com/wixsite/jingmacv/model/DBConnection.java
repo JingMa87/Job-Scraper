@@ -106,7 +106,8 @@ public class DBConnection {
 	    	ppsm.executeUpdate();
 	    	status = "saved";
 	    } catch(SQLIntegrityConstraintViolationException se) {
-	    	status = "saved";
+	    	status = "duplicate";
+	    	System.out.println("Duplicate: " + jobTitle + ", " + company + ", " + location);
 	    	se.printStackTrace();
 	    } catch(SQLException se) {
 	    	status = "noData";

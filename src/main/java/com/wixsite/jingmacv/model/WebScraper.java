@@ -3,6 +3,7 @@ package com.wixsite.jingmacv.model;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -25,34 +26,48 @@ public class WebScraper {
 		WebDriver driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		driver.get("https://www.indeed.nl/?r=us");
-		// Finding and filling in input field "what".
+		// Finds and fills in input field "what".
 		WebElement input = driver.findElement(By.id("what"));
 		input.sendKeys(jobTitleInput);
-		// Finding and filling in input field "where".
+		// Finds and fills in input field "where".
 		input = driver.findElement(By.id("where"));
 		input.sendKeys(locationInput);
-		// Find and submit the web form.
+		// Finds and submits the web form.
 		WebElement submit = driver.findElement(By.id("fj"));
 		submit.click();
 		String status = null;
 		int pageCount = 0;
-		String dom = driver.getPageSource();
-		System.out.println(dom);
+		// Loops over all pages and saves the job title, company and location in the database.
 		while (true) {
 			pageCount++;
-			// Retrieve job title, company and location of Java vacancies.
-			List<WebElement> jobTitles = driver.findElements(By.cssSelector("#resultsCol .jobtitle"));
-			List<WebElement> companies = driver.findElements(By.cssSelector("#resultsCol .company"));
-			List<WebElement> locations = driver.findElements(By.cssSelector("#resultsCol .location"));
-			// Save the new data to the database.
-			for (int i = 0; i < jobTitles.size(); i++) {
-				String jobTitle = jobTitles.get(i).getText();
-				String company = companies.get(i).getText();
-				String location = locations.get(i).getText();
+			// Retrieves a list of vacancies, each containing a job title, company and location.
+			List<WebElement> list = driver.findElements(By.cssSelector(".result"));
+			// Loops over the vacancies and saves the job title, company and location in the database.
+			for (WebElement item : list) {
+				WebElement jobTitleTag = null;
+				WebElement companyTag = null;
+				WebElement locationTag = null;
+				String jobTitle = null;
+				String company = null;
+				String location = null;
+				if (item.findElements(By.cssSelector("#resultsCol .jobtitle")).size() != 0) {
+					jobTitleTag = item.findElement(By.cssSelector("#resultsCol .jobtitle"));
+					jobTitle = jobTitleTag.getText();
+				}
+				if (item.findElements(By.cssSelector("#resultsCol .company")).size() != 0) {
+					companyTag = item.findElement(By.cssSelector("#resultsCol .company"));
+					company = companyTag.getText();
+				}
+				if (item.findElements(By.cssSelector("#resultsCol .location")).size() != 0) {
+					locationTag = item.findElement(By.cssSelector("#resultsCol .location"));
+					location = locationTag.getText();
+				}
+				// If the company is unknown the user would still want to apply to the job right haha.
 				if (jobTitle != null && location != null)
 					status = DBConnection.saveVacancy(jobTitle, company, location + pageCount);
 					if (status.equals("noData"))
 						break;
+				
 			}
 			if (status.equals("noData") || driver.findElements(By.partialLinkText("Volgende")).size() == 0)
 				break;

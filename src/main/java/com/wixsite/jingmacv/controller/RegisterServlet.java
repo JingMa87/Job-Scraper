@@ -17,8 +17,8 @@ public class RegisterServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
+		String username = request.getParameter("username").trim();
+		String password = request.getParameter("password").trim();
 		String status = DBConnection.registerUsernamePassword(username, password);
 	    if (status == "registered") {
 	    	HttpSession session = request.getSession();

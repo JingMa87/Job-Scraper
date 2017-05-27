@@ -18,8 +18,8 @@ public class LoginServlet extends HttpServlet {
 	private DBConnection conn = new DBConnection();
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
+		String username = request.getParameter("username").trim();
+		String password = request.getParameter("password").trim();
 		if (conn.checkUsernamePassword(username, password)) {
 			HttpSession session = request.getSession();
 	    	session.setAttribute("username", username);
