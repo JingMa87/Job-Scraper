@@ -2,7 +2,7 @@
 
 <img src="http://xaharts.org/funny/i/gitopuss/github-octocat_yes-we-code.jpg" width="400">
 
-This is a personal web application project that I'm building using Java EE, JSP, servlets, Hibernate and MVC. 
+This is a web application that I'm building using Java EE, JSP, servlets, MVC, Maven and Selenium. 
 I'm experimenting with different technologies so as to achieve a broad knowledge about what tools are being used right now.
 Technology changes fast, so gotta keep up!
 
