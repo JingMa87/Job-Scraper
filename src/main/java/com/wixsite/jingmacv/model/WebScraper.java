@@ -18,7 +18,7 @@ public class WebScraper {
 	
 	// The main function of this class which scrapes a website for vacancy data.
 	public static String scrape(String jobTitleInput, String locationInput) {
-		// Resets the data in the jng_vacancy table.
+		// Resets the data in the jbs_vacancy table.
 		DBConnection.resetTable();
 		// Initializes a web driver with a website.
 		WebDriver driver = initWebDriver("chrome" ,"https://www.indeed.nl/?r=us");

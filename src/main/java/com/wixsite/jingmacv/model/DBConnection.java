@@ -39,21 +39,21 @@ public class DBConnection {
     	
 	    try {
 	    	// Query.
-	    	ppsm = conn.prepareStatement("SELECT jng_usr_username, jng_usr_password FROM jng_user WHERE jng_usr_username = ?");
+	    	ppsm = conn.prepareStatement("SELECT username, password FROM jbs_user WHERE username = ?");
 	    	ppsm.setString(1, username);
 	    	rs = ppsm.executeQuery();
 	    	// Loops over database rows.
 	    	while(rs.next()) {
-	    		dbUsername = rs.getString("jng_usr_username");
-	    		dbPassword = rs.getString("jng_usr_password");
+	    		dbUsername = rs.getString("username");
+	    		dbPassword = rs.getString("password");
 	    	}
 	    	if (password == null || dbPassword == null)
 	    		return match;
 	    	match = username.equals(dbUsername) && BCrypt.checkpw(password, dbPassword);
 		    if (match) {
-		    	ppsm = conn.prepareStatement("INSERT INTO jng_login_audit (login_audit_id, lga_time, lga_dba_user, lga_user_id)" +
-		    						   "VALUES ((SELECT NVL(MAX(login_audit_id) + 1, 1) FROM jng_login_audit), TO_CHAR(SYSDATE, 'DD/MM/YYYY HH:MI:SSAM')," + 
-		    						   "(SELECT USER FROM dual), (SELECT user_id FROM jng_user WHERE jng_usr_username = ?))");
+		    	ppsm = conn.prepareStatement("INSERT INTO jbs_login_audit (id, time, dba_user, user_id)" +
+		    						   "VALUES ((SELECT NVL(MAX(id) + 1, 1) FROM jbs_login_audit), TO_CHAR(SYSDATE, 'DD/MM/YYYY HH:MI:SSAM')," + 
+		    						   "(SELECT USER FROM dual), (SELECT id FROM jbs_user WHERE username = ?))");
 		    	ppsm.setString(1, username);
 		    	ppsm.executeUpdate();
 		    }
@@ -72,13 +72,13 @@ public class DBConnection {
 			password = BCrypt.hashpw(password, BCrypt.gensalt());
 	    	
 	    	// Insert username and password into database.
-	    	ppsm = conn.prepareStatement("INSERT INTO jng_user (user_id, jng_usr_username, jng_usr_password) VALUES ((SELECT NVL(MAX(user_id) + 1, 1) FROM jng_user), ?, ?)");
+	    	ppsm = conn.prepareStatement("INSERT INTO jbs_user (id, username, password) VALUES ((SELECT NVL(MAX(id) + 1, 1) FROM jbs_user), ?, ?)");
 	    	ppsm.setString(1, username);
 	    	ppsm.setString(2, password);
 	    	ppsm.executeUpdate();
 	    	
-	    	ppsm = conn.prepareStatement("INSERT INTO jng_register_audit (user_id, rga_time, rga_dba_user) VALUES " +
-	    	"((SELECT user_id FROM jng_user WHERE jng_usr_username = ?), TO_CHAR(SYSDATE, 'DD/MM/YYYY HH:MI:SSAM'), (SELECT USER FROM dual))");
+	    	ppsm = conn.prepareStatement("INSERT INTO jbs_register_audit (id, time, dba_user) VALUES " +
+	    	"((SELECT id FROM jbs_user WHERE username = ?), TO_CHAR(SYSDATE, 'DD/MM/YYYY HH:MI:SSAM'), (SELECT USER FROM dual))");
 			ppsm.setString(1, username);
 			ppsm.executeUpdate();
 	    	status = "registered";
@@ -98,8 +98,8 @@ public class DBConnection {
 		PreparedStatement ppsm = null;
 		try {
 			// Insert vacancy into database.
-	    	ppsm = conn.prepareStatement("INSERT INTO jng_vacancy (vacancy_id, vcn_job_title, vcn_company, vcn_location) " +
-	    								 "VALUES ((SELECT NVL(MAX(vacancy_id) + 1, 1) FROM jng_vacancy), ?, ?, ?)");
+	    	ppsm = conn.prepareStatement("INSERT INTO jbs_vacancy (id, job_title, company, location) " +
+	    								 "VALUES ((SELECT NVL(MAX(id) + 1, 1) FROM jbs_vacancy), ?, ?, ?)");
 	    	ppsm.setString(1, jobTitle);
 	    	ppsm.setString(2, company);
 	    	ppsm.setString(3, location);
@@ -126,7 +126,7 @@ public class DBConnection {
 		ArrayList<Vacancy> vacancies = new ArrayList<>();
 		try {
 	    	// Retrieves vacancy objects into the ResultSet.
-	    	String sqlGetData = "SELECT vacancy_id, vcn_job_title, vcn_company, vcn_location FROM jng_vacancy ORDER BY vacancy_id";
+	    	String sqlGetData = "SELECT id, job_title, company, location FROM jbs_vacancy ORDER BY id";
 	    	rs = stmt.executeQuery(sqlGetData);
 	    	while(rs.next()) {
 	            Vacancy vacancy = new Vacancy(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
@@ -139,7 +139,7 @@ public class DBConnection {
 	}
 	
 	public static void resetTable() {
-		String sqlResetTable = "DELETE FROM jng_vacancy";
+		String sqlResetTable = "DELETE FROM jbs_vacancy";
 		try {
 			stmt.executeQuery(sqlResetTable);
 		} catch (SQLException e) {
