@@ -30,6 +30,7 @@ public class XMLGenerator {
 	            String jobTitle = vacancy.getJobTitle();	            
 	            String company = vacancy.getCompany();            
 	            String location = vacancy.getLocation();
+	            System.out.println(vacancyID + ", " + jobTitle + ", " + company + ", " + location);
 	            addVacancy(mainRootElement, doc, vacancyID, jobTitle, company, location);
             }
  
