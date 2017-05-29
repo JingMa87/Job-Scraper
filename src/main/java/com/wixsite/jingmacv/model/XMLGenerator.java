@@ -25,12 +25,11 @@ public class XMLGenerator {
  
             ArrayList<Vacancy> vacancies = DBConnection.getResultSet();
             // Appends child elements to root element.
-            for(Vacancy vacancy : vacancies) {
-            	int vacancyID = vacancy.getVacancyID();	            
+            for (Vacancy vacancy : vacancies) {
+            	String vacancyID = Integer.toString(vacancy.getVacancyID());	            
 	            String jobTitle = vacancy.getJobTitle();	            
-	            String company = vacancy.getCompany();            
+	            String company = (vacancy.getCompany() == null ? "" : vacancy.getCompany());            
 	            String location = vacancy.getLocation();
-	            System.out.println(vacancyID + ", " + jobTitle + ", " + company + ", " + location);
 	            addVacancy(mainRootElement, doc, vacancyID, jobTitle, company, location);
             }
  
@@ -47,24 +46,20 @@ public class XMLGenerator {
         return true;
     }
 	
-	private static void addVacancy(Element mainRootElement, Document doc, int vacancyID, String jobTitle, String company, String location) {
+	private static void addVacancy(Element mainRootElement, Document doc, String vacancyID, String jobTitle, String company, String location) {
+		// Adds the vacancy tag to the vacancies tag.
 		Element vacancy = doc.createElement("vacancy");
         mainRootElement.appendChild(vacancy);
-  
-        Element vacancyIDElement = doc.createElement("vacancyID");
-        vacancyIDElement.appendChild(doc.createTextNode(Integer.toString(vacancyID)));
-        vacancy.appendChild(vacancyIDElement);
-  
-        Element jobTitleElement = doc.createElement("jobTitle");
-        jobTitleElement.appendChild(doc.createTextNode(jobTitle));
-        vacancy.appendChild(jobTitleElement);
-  
-        Element companyElement = doc.createElement("company");
-        companyElement.appendChild(doc.createTextNode(company));
-        vacancy.appendChild(companyElement);
-        
-        Element locationElement = doc.createElement("location");
-        locationElement.appendChild(doc.createTextNode(location));
-        vacancy.appendChild(locationElement);
+        // Adds children tags to the vacancy tag.
+        addTags(doc, vacancy, "vacancyID", vacancyID);
+        addTags(doc, vacancy, "jobTitle", jobTitle);
+        addTags(doc, vacancy, "company", company);
+        addTags(doc, vacancy, "location", location);
+	}
+	
+	private static void addTags(Document doc, Element vacancy, String tagName, String tagValue) {
+		Element element = doc.createElement(tagName);
+        element.appendChild(doc.createTextNode(tagValue));
+        vacancy.appendChild(element);
 	}
 }

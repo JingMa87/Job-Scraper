@@ -57,7 +57,7 @@ public class PDFGenerator {
             // Adds the table to the PDF.
             doc.add(table);                       
             doc.close();
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {
 			e.printStackTrace();
