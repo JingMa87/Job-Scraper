@@ -8,14 +8,24 @@
 	<body>				 
 		<h1>Web Scraper</h1>
 		
-		<!-- Input fields for web scraping + submit button. -->
+		<!-- Form for web scraping job vacancies. -->
 		<form action="web-scrape" method="get">
+			<!-- A drop down menu where you can pick a job search engine. -->
+			<p>Pick a job search engine to scrape:</p>
+			<select name="searchEngine">
+				<option value="indeed">Indeed</option>
+				<option value="nationaleVacaturebank">Nationale Vacaturebank</option>
+				<option value="monsterboard">Monsterboard</option>
+			</select>
+			<br>
+			<!-- Input fields for filling in a job title and location + a submit button. -->
+			<p>Fill in a job title and location:</p>
 			<input type="text" name="jobTitle" placeholder="Add a job title..." value="${jobTitle}"></input>
 			<input type="text" name="location" placeholder="Add a location..." value="${location}"></input>
 			<button type="submit">Scrape</button><br>
-		</form><br>
-		
+		</form>	
 		<!-- Buttons to generate XML and PDF documents. -->
+		<p>Download the data:</p>
 		<form action="generate-document" method="get">
 			<button name="generate" value="XML" type="submit">XML</button>
 			<button name="generate" value="PDF" type="submit">PDF</button><br>

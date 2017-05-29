@@ -38,13 +38,13 @@ public class WebScraper {
 	
 	private static void fillInSearchTerms(WebDriver driver, String jobTitleInput, String locationInput) {
 		// Finds and fills in input field "what".
-		WebElement input = driver.findElement(By.id("what"));
+		WebElement input = driver.findElement(By.cssSelector("#what"));
 		input.sendKeys(jobTitleInput);
 		// Finds and fills in input field "where".
-		input = driver.findElement(By.id("where"));
+		input = driver.findElement(By.cssSelector("#where"));
 		input.sendKeys(locationInput);
 		// Finds and submits the web form.
-		WebElement submit = driver.findElement(By.id("fj"));
+		WebElement submit = driver.findElement(By.cssSelector(".input_submit"));
 		submit.click();
 	}
 	
@@ -98,11 +98,11 @@ public class WebScraper {
 		if (driver.findElements(By.partialLinkText("Volgende")).size() != 0)
 			retryClick(driver, By.partialLinkText("Volgende"));
 		// If there's an overlay, it'll be clicked.
-		if (driver.findElements(By.id("popover-close-link")).size() != 0)
-			driver.findElement(By.id("popover-close-link")).click();
+		if (driver.findElements(By.cssSelector("#popover-close-link")).size() != 0)
+			driver.findElement(By.cssSelector("#popover-close-link")).click();
 		// If there's a cookie message, it'll be clicked.
-		if (driver.findElements(By.id("cookie-alert-ok")).size() != 0)
-			driver.findElement(By.id("cookie-alert-ok")).click();		
+		if (driver.findElements(By.cssSelector("#cookie-alert-ok")).size() != 0)
+			driver.findElement(By.cssSelector("#cookie-alert-ok")).click();		
 	}
 	
 	private static boolean retryClick(WebDriver driver, By by) {
