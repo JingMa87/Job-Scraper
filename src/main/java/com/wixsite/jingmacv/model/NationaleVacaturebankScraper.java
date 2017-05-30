@@ -57,6 +57,7 @@ public class NationaleVacaturebankScraper {
 		// Loops over all pages and saves the job title, company and location in the database.
 		while (true) {
 			pageCount++;
+			// To prevent loading vacancies of the previous page.
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
@@ -88,7 +89,6 @@ public class NationaleVacaturebankScraper {
 				}
 				// If the company is unknown the user would still want to apply to the job.
 				if (jobTitle != null && location != null)
-					System.out.println(jobTitle + ", " + company + ", " + location + ", " + pageCount);
 					// Saves the vacancies in the database.
 					status = DBConnection.saveVacancy(jobTitle, company, location + ", " + pageCount);
 					if (status.equals("noData"))
