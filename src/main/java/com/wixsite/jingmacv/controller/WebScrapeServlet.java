@@ -41,7 +41,7 @@ public class WebScrapeServlet extends HttpServlet {
 				else if (searchEngine.equals("nationaleVacaturebank")) {
 					status = NationaleVacaturebankScraper.scrape(jobTitle, location);
 				}
-				else {
+				else if (searchEngine.equals("monsterboard")) {
 					status = MonsterboardScraper.scrape(jobTitle, location);
 				}
 				// Checks if the scraping was successful.

@@ -24,7 +24,7 @@ public class DBConnection {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 	    	conn = DriverManager.getConnection(DB_URL);
 	    	stmt = conn.createStatement();
-	    } catch(SQLException se) {
+	    } catch (SQLException se) {
 	    	se.printStackTrace();
 	    } catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -43,7 +43,7 @@ public class DBConnection {
 	    	ppsm.setString(1, username);
 	    	rs = ppsm.executeQuery();
 	    	// Loops over database rows.
-	    	while(rs.next()) {
+	    	while (rs.next()) {
 	    		dbUsername = rs.getString("username");
 	    		dbPassword = rs.getString("password");
 	    	}
@@ -57,9 +57,9 @@ public class DBConnection {
 		    	ppsm.setString(1, username);
 		    	ppsm.executeUpdate();
 		    }
-	    } catch(SQLException se) {
+	    } catch (SQLException se) {
 	    	se.printStackTrace();
-	    } catch(Exception e) {
+	    } catch (Exception e) {
 	    	e.printStackTrace();
 	    }
 	    return match;
@@ -82,10 +82,10 @@ public class DBConnection {
 			ppsm.setString(1, username);
 			ppsm.executeUpdate();
 	    	status = "registered";
-	    } catch(SQLIntegrityConstraintViolationException se) {
+	    } catch (SQLIntegrityConstraintViolationException se) {
 	    	status = "uniqueConstraint"; 
 	    	se.printStackTrace();
-	    } catch(SQLException se) {
+	    } catch (SQLException se) {
 	    	status = "incorrectUsernamePassword";
 	    	se.printStackTrace();
 	    }
@@ -105,11 +105,9 @@ public class DBConnection {
 	    	ppsm.setString(3, location);
 	    	ppsm.executeUpdate();
 	    	status = "saved";
-	    } catch(SQLIntegrityConstraintViolationException se) {
-	    	status = "duplicate";
-	    	System.out.println("Duplicate: " + jobTitle + ", " + company + ", " + location);
+	    } catch (SQLIntegrityConstraintViolationException se) {
 	    	se.printStackTrace();
-	    } catch(SQLException se) {
+	    } catch (SQLException se) {
 	    	status = "noData";
 	    	se.printStackTrace();
 	    } finally {
@@ -128,11 +126,11 @@ public class DBConnection {
 	    	// Retrieves vacancy objects into the ResultSet.
 	    	String sqlGetData = "SELECT id, job_title, company, location FROM jbs_vacancy ORDER BY id";
 	    	rs = stmt.executeQuery(sqlGetData);
-	    	while(rs.next()) {
+	    	while (rs.next()) {
 	            Vacancy vacancy = new Vacancy(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
 	            vacancies.add(vacancy);
 	    	}
-	    } catch(SQLException se) {
+	    } catch (SQLException se) {
 	    	se.printStackTrace();
 	    }
 		return vacancies;
@@ -150,27 +148,27 @@ public class DBConnection {
 	// Closes Connection, Statement and ResultSet.
 	public void closeConnection() {
 		try {
-    		if(rs != null)
+    		if (rs != null)
     			rs.close();
-    	} catch(SQLException se) {
+    	} catch (SQLException se) {
     		se.printStackTrace();
     	}
 		try {
-    		if(ppsm != null)
+    		if (ppsm != null)
     			ppsm.close();
-    	} catch(SQLException se) {
+    	} catch (SQLException se) {
     		se.printStackTrace();
     	}
     	try {
-    		if(stmt != null)
+    		if (stmt != null)
     			stmt.close();
-    	} catch(SQLException se) {
+    	} catch (SQLException se) {
     		se.printStackTrace();
     	}
     	try {
-    		if(conn != null)
+    		if (conn != null)
     			conn.close();
-    	} catch(SQLException se) {
+    	} catch (SQLException se) {
     		se.printStackTrace();
     	}
 	}

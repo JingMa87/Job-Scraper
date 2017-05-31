@@ -7,6 +7,8 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /*
  * A web scraper class with one public function called scrape().
@@ -18,7 +20,10 @@ public class MonsterboardScraper {
 		// Resets the data in the jbs_vacancy table.
 		DBConnection.resetTable();
 		// Initializes a web driver with a website.
-		WebDriver driver = initWebDriver("https://www.indeed.nl/?r=us");
+		WebDriver driver = initWebDriver("https://www.monsterboard.nl");
+		// Waits for the cookie message to appear and then clicks it.
+		WebDriverWait wait = new WebDriverWait(driver, 3000);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.fa-times"))).click();
 		// Finds and fills in input fields with a job title and location.
 		fillInSearchTerms(driver, jobTitleInput, locationInput);
 		// Loops over all pages and saves the job title, company and location in the database.
@@ -38,13 +43,13 @@ public class MonsterboardScraper {
 	
 	private static void fillInSearchTerms(WebDriver driver, String jobTitleInput, String locationInput) {
 		// Finds and fills in input field "what".
-		WebElement input = driver.findElement(By.id("what"));
+		WebElement input = driver.findElement(By.cssSelector("#q1"));
 		input.sendKeys(jobTitleInput);
 		// Finds and fills in input field "where".
-		input = driver.findElement(By.id("where"));
+		input = driver.findElement(By.cssSelector("#where1"));
 		input.sendKeys(locationInput);
 		// Finds and submits the web form.
-		WebElement submit = driver.findElement(By.id("fj"));
+		WebElement submit = driver.findElement(By.cssSelector("#doQuickSearch"));
 		submit.click();
 	}
 	
@@ -55,7 +60,7 @@ public class MonsterboardScraper {
 		while (true) {
 			pageCount++;
 			// Retrieves a list of vacancies, each containing a job title, company and location.
-			List<WebElement> list = driver.findElements(By.cssSelector(".result"));
+			List<WebElement> list = driver.findElements(By.cssSelector(".js_result_container.primary"));
 			// Loops over the vacancies.
 			for (WebElement item : list) {
 				WebElement jobTitleTag = null;
@@ -65,16 +70,16 @@ public class MonsterboardScraper {
 				String company = null;
 				String location = null;
 				// Finds the job title, company and location per vacancy.
-				if (item.findElements(By.cssSelector("#resultsCol .jobtitle")).size() != 0) {
-					jobTitleTag = item.findElement(By.cssSelector("#resultsCol .jobtitle"));
+				if (item.findElements(By.cssSelector(".jobTitle")).size() != 0) {
+					jobTitleTag = item.findElement(By.cssSelector(".jobTitle"));
 					jobTitle = jobTitleTag.getText();
 				}
-				if (item.findElements(By.cssSelector("#resultsCol .company")).size() != 0) {
-					companyTag = item.findElement(By.cssSelector("#resultsCol .company"));
+				if (item.findElements(By.cssSelector(".company")).size() != 0) {
+					companyTag = item.findElement(By.cssSelector(".company"));
 					company = companyTag.getText();
 				}
-				if (item.findElements(By.cssSelector("#resultsCol .location")).size() != 0) {
-					locationTag = item.findElement(By.cssSelector("#resultsCol .location"));
+				if (item.findElements(By.cssSelector(".job-specs-location")).size() != 0) {
+					locationTag = item.findElement(By.cssSelector(".job-specs-location"));
 					location = locationTag.getText();
 				}
 				// If the company is unknown the user would still want to apply to the job.
@@ -85,7 +90,8 @@ public class MonsterboardScraper {
 						break;
 				
 			}
-			if (status.equals("noData") || driver.findElements(By.partialLinkText("Volgende")).size() == 0)
+			WebDriverWait wait = new WebDriverWait(driver, 3000);			
+			if (status.equals("noData") || wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.fa-times"))) == null)
 				break;
 			// Clicks on "next" and on overlays.
 			clickNext(driver);
@@ -94,15 +100,13 @@ public class MonsterboardScraper {
 	}
 	
 	private static void clickNext(WebDriver driver) {
-		// If there's a "next" button, it'll be clicked.
-		if (driver.findElements(By.partialLinkText("Volgende")).size() != 0)
-			retryClick(driver, By.partialLinkText("Volgende"));
 		// If there's an overlay, it'll be clicked.
-		if (driver.findElements(By.id("popover-close-link")).size() != 0)
-			driver.findElement(By.id("popover-close-link")).click();
-		// If there's a cookie message, it'll be clicked.
-		if (driver.findElements(By.id("cookie-alert-ok")).size() != 0)
-			driver.findElement(By.id("cookie-alert-ok")).click();		
+		if (driver.findElements(By.cssSelector(".popup-close-icon")).size() != 0) {
+			driver.findElement(By.cssSelector(".popup-close-icon")).click();
+		}
+		// Waits for the "next" button to appear and then clicks it.
+		WebDriverWait wait = new WebDriverWait(driver, 3000);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".next"))).click();	
 	}
 	
 	private static boolean retryClick(WebDriver driver, By by) {

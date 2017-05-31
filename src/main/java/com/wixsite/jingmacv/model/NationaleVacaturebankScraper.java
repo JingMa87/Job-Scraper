@@ -18,7 +18,7 @@ public class NationaleVacaturebankScraper {
 		// Resets the data in the jbs_vacancy table.
 		DBConnection.resetTable();
 		// Initializes a web driver with a website.
-		WebDriver driver = initWebDriver("https://www.nationalevacaturebank.nl/");
+		WebDriver driver = initWebDriver("https://www.nationalevacaturebank.nl");
 		// If there's a cookie message, it'll be clicked.
 		if (driver.findElements(By.cssSelector("#form_save")).size() != 0)
 			driver.findElement(By.cssSelector("#form_save")).click();
