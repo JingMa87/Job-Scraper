@@ -15,17 +15,18 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  */
 public class MonsterboardScraper {
 	
+	private static WebDriverWait wait;
+	
 	// The main function of this class which scrapes a website for vacancy data.
 	public static String scrape(String jobTitleInput, String locationInput) {
 		// Resets the data in the jbs_vacancy table.
 		DBConnection.resetTable();
 		// Initializes a web driver with a website.
 		WebDriver driver = initWebDriver("https://www.monsterboard.nl");
-		// Waits for the cookie message to appear and then clicks it.
-		WebDriverWait wait = new WebDriverWait(driver, 3000);
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.fa-times"))).click();
 		// Finds and fills in input fields with a job title and location.
 		fillInSearchTerms(driver, jobTitleInput, locationInput);
+		// Waits for the cookie message to appear and then clicks it.
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.fa-times"))).click();
 		// Loops over all pages and saves the job title, company and location in the database.
 		String status = findAndSaveAllVacancies(driver);
 		// Close browser.
@@ -38,6 +39,7 @@ public class MonsterboardScraper {
 		WebDriver driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		driver.get(url);
+		wait = new WebDriverWait(driver, 3000);
 		return driver;
 	}
 	
@@ -61,6 +63,7 @@ public class MonsterboardScraper {
 			pageCount++;
 			// Retrieves a list of vacancies, each containing a job title, company and location.
 			List<WebElement> list = driver.findElements(By.cssSelector(".js_result_container.primary"));
+			System.out.println("Size: " + list.size());
 			// Loops over the vacancies.
 			for (WebElement item : list) {
 				WebElement jobTitleTag = null;
@@ -90,8 +93,7 @@ public class MonsterboardScraper {
 						break;
 				
 			}
-			WebDriverWait wait = new WebDriverWait(driver, 3000);			
-			if (status.equals("noData") || wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.fa-times"))) == null)
+			if (status.equals("noData") || driver.findElements(By.cssSelector(".next")).size() == 0)
 				break;
 			// Clicks on "next" and on overlays.
 			clickNext(driver);
@@ -100,28 +102,12 @@ public class MonsterboardScraper {
 	}
 	
 	private static void clickNext(WebDriver driver) {
-		// If there's an overlay, it'll be clicked.
-		if (driver.findElements(By.cssSelector(".popup-close-icon")).size() != 0) {
-			driver.findElement(By.cssSelector(".popup-close-icon")).click();
+		// Checks for layover and clicks it if it exists.
+		WebElement layover = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".popup-close-icon")));
+		if (layover.isDisplayed()) {
+			layover.click();
 		}
 		// Waits for the "next" button to appear and then clicks it.
-		WebDriverWait wait = new WebDriverWait(driver, 3000);
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".next"))).click();	
-	}
-	
-	private static boolean retryClick(WebDriver driver, By by) {
-        boolean result = false;
-        int attempts = 0;
-        while (attempts < 2) {
-            try {
-                driver.findElement(by).click();
-                result = true;
-                break;
-            } catch (StaleElementReferenceException e) {
-            	e.printStackTrace();
-            }
-            attempts++;
-        }
-        return result;
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".next"))).click();
 	}
 }

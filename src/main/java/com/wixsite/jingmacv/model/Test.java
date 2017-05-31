@@ -11,30 +11,32 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Test {
 	
+	private static WebDriverWait wait;
+	
 	public static void main(String[] args) {
 		System.setProperty("webdriver.chrome.driver", "C:/Program Files (x86)/chromedriver_win32/chromedriver.exe");
 		WebDriver driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		driver.get("https://www.monsterboard.nl");
+		wait = new WebDriverWait(driver, 3000);
 
 		// Finds and fills in input field "what".
 		WebElement input = driver.findElement(By.cssSelector("#q1"));		
-		input.sendKeys("java");
+		input.sendKeys("python");
 		// Finds and fills in input field "where".
 		input = driver.findElement(By.cssSelector("#where1"));
-		input.sendKeys("den haag");
+		input.sendKeys("amsterdam");
 		// Finds and submits the web form.
 		WebElement submit = driver.findElement(By.cssSelector("#doQuickSearch"));
 		submit.click();
 		
 		// Waits for the cookie message to appear and then clicks it.
-		WebDriverWait wait = new WebDriverWait(driver, 3000);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.fa-times"))).click();
 
 		int pageCount = 0;
 		while (true) {
 			System.out.println(++pageCount);
-			wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".js_result_container.primary")));
+			//wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".js_result_container.primary")));
 			List<WebElement> list = driver.findElements(By.cssSelector(".js_result_container.primary"));
 			System.out.println("Size: " + list.size());
 			// Loops over the vacancies.
@@ -68,8 +70,8 @@ public class Test {
 			if (layover.isDisplayed()) {
 				layover.click();
 			}
-			// Waits for the "next" button to appear and then clicks it.
-			if (!wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".next"))).isDisplayed()) {
+			// Waits for the "next" button to appear and then clicks it.			
+			if (driver.findElements(By.cssSelector(".next")).size() == 0) {
 				System.out.println("BREAK!");
 				break;
 			}
