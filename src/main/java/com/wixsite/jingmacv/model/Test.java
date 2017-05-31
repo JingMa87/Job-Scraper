@@ -75,6 +75,6 @@ public class Test {
 			}
 			wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".next"))).click();
 		}
-		driver.close();//test
+		driver.close();
 	}
 }
