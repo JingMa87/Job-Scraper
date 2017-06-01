@@ -7,6 +7,8 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /*
  * A web scraper class with one public function called scrape().
@@ -19,15 +21,18 @@ public class NationaleVacaturebankScraper {
 		DBConnection.resetTable();
 		// Initializes a web driver with a website.
 		WebDriver driver = initWebDriver("https://www.nationalevacaturebank.nl");
-		// If there's a cookie message, it'll be clicked.
-		if (driver.findElements(By.cssSelector("#form_save")).size() != 0)
-			driver.findElement(By.cssSelector("#form_save")).click();
+//		// If there's a cookie message, it'll be clicked.
+//		if (driver.findElements(By.cssSelector("#form_save")).size() != 0)
+//			driver.findElement(By.cssSelector("#form_save")).click();
+		// Waits for the cookie message to appear and then clicks it.
+		WebDriverWait wait = new WebDriverWait(driver, 3000);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#form_save"))).click();
 		// Finds and fills in input fields with a job title and location.
 		fillInSearchTerms(driver, jobTitleInput, locationInput);
 		// Loops over all pages and saves the job title, company and location in the database.
 		String status = findAndSaveAllVacancies(driver);
 		// Close browser.
-		//driver.close();
+		driver.close();
 		return status;
 	}
 	
@@ -65,7 +70,6 @@ public class NationaleVacaturebankScraper {
 			}
 			// Retrieves a list of vacancies, each containing a job title, company and location.
 			List<WebElement> list = driver.findElements(By.cssSelector("div[data-ng-repeat='job in jobPage.jobs track by $index']"));
-			System.out.println("Size: " + list.size());
 			// Loops over the vacancies.
 			for (WebElement item : list) {
 				WebElement jobTitleTag = null;

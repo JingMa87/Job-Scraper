@@ -3,7 +3,6 @@ package com.wixsite.jingmacv.model;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -30,7 +29,7 @@ public class MonsterboardScraper {
 		// Loops over all pages and saves the job title, company and location in the database.
 		String status = findAndSaveAllVacancies(driver);
 		// Close browser.
-		//driver.close();
+		driver.close();
 		return status;
 	}
 	
@@ -63,7 +62,6 @@ public class MonsterboardScraper {
 			pageCount++;
 			// Retrieves a list of vacancies, each containing a job title, company and location.
 			List<WebElement> list = driver.findElements(By.cssSelector(".js_result_container.primary"));
-			System.out.println("Size: " + list.size());
 			// Loops over the vacancies.
 			for (WebElement item : list) {
 				WebElement jobTitleTag = null;

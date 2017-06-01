@@ -24,7 +24,7 @@ public class WebScraper {
 		// Loops over all pages and saves the job title, company and location in the database.
 		String status = findAndSaveAllVacancies(driver);
 		// Close browser.
-		//driver.close();
+		driver.close();
 		return status;
 	}
 	
@@ -54,8 +54,15 @@ public class WebScraper {
 		// Loops over all pages and saves the job title, company and location in the database.
 		while (true) {
 			pageCount++;
+			// To prevent loading vacancies of the previous page.
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			// Retrieves a list of vacancies, each containing a job title, company and location.
 			List<WebElement> list = driver.findElements(By.cssSelector(".result"));
+			System.out.println("Size: " + list.size());
 			// Loops over the vacancies.
 			for (WebElement item : list) {
 				WebElement jobTitleTag = null;
@@ -87,6 +94,7 @@ public class WebScraper {
 			}
 			if (status.equals("noData") || driver.findElements(By.partialLinkText("Volgende")).size() == 0)
 				break;
+			System.out.println("Click next!!! Page: " + pageCount);
 			// Clicks on "next" and on overlays.
 			clickNext(driver);
 		}
