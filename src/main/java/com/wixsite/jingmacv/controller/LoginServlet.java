@@ -28,5 +28,4 @@ public class LoginServlet extends HttpServlet {
 		else
 			request.getRequestDispatcher("WEB-INF/view/register.jsp").forward(request, response);
 	}
-
 }

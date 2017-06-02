@@ -31,11 +31,6 @@ public class GenerateDocumentServlet extends HttpServlet {
 			request.setAttribute("documentError", "Something went wrong.");
 		}
 		// Puts the job title and location in the input fields.
-		HttpSession session = request.getSession();
-		String jobTitle = (String) session.getAttribute("jobTitle");
-		String location = (String) session.getAttribute("location");
-		request.setAttribute("jobTitle", jobTitle);
-		request.setAttribute("location", location);
 		request.getRequestDispatcher("web-scrape").forward(request, response);
 	}
 
