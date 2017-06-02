@@ -10,7 +10,7 @@
 		<form action="register" method="post">
 			<input type="text" name="username" placeholder="Username"><br>
 			<input type="password" name="password" placeholder="Password"><br>
-			<button type="submit" name="submit">Login</button><br>
+			<button type="submit" name="submit">Register</button><br>
 		</form>
 		<p style="color:red;">${uniqueConstraint}</p>
 		<p style="color:red;">${incorrectUsernamePassword}</p>

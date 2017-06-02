@@ -26,7 +26,7 @@ public class RegisterServlet extends HttpServlet {
 	    	request.getRequestDispatcher("login.jsp").forward(request, response);
 	    }
 	    else if (status == "uniqueConstraint") {
-	    	request.setAttribute("uniqueConstraint", "Username and password already exist.");
+	    	request.setAttribute("uniqueConstraint", "Username already exists.");
 	    	request.getRequestDispatcher("WEB-INF/view/register.jsp").forward(request, response);
 	    }
 	    else {
