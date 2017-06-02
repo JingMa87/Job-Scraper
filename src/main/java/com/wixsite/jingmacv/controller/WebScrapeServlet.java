@@ -19,12 +19,14 @@ import com.wixsite.jingmacv.model.IndeedScraper;
 public class WebScrapeServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	private HttpSession session;
 	
 	@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String jobTitle = request.getParameter("jobTitle");
 		String location = request.getParameter("location");
 		String status = null;
+		session = request.getSession();
 		// Show the table in webScrape.jsp.
 		boolean scraped = true;
 		request.setAttribute("scraped", scraped);
@@ -35,6 +37,7 @@ public class WebScrapeServlet extends HttpServlet {
 			}
 			else {
 				String searchEngine = request.getParameter("searchEngine");
+				setSelectedOption(session, searchEngine);
 				if (searchEngine.equals("indeed")) {
 					status = IndeedScraper.scrape(jobTitle, location);
 				}
@@ -59,7 +62,6 @@ public class WebScrapeServlet extends HttpServlet {
 		request.setAttribute("vacancies", DBConnection.getResultSet());
 		// Set values for the input fields.
 		if (jobTitle != null && location != null) {
-			HttpSession session = request.getSession();
 	    	session.setAttribute("jobTitle", jobTitle);
 	    	session.setAttribute("location", location);
 		}
@@ -72,6 +74,26 @@ public class WebScrapeServlet extends HttpServlet {
 		doGet(request, response);
     }
 	
+	// Sets the html default option to the selected option.
+	private static void setSelectedOption(HttpSession session, String searchEngine) {
+		if (searchEngine.equals("indeed")) {
+			session.setAttribute("indeedSelected", "selected=\"selected\"");
+			session.setAttribute("nationaleVacaturebankSelected", "");
+			session.setAttribute("monsterboardSelected", "");
+		}
+		else if (searchEngine.equals("nationaleVacaturebank")) {
+			session.setAttribute("indeedSelected", "");
+			session.setAttribute("nationaleVacaturebankSelected", "selected=\"selected\"");
+			session.setAttribute("monsterboardSelected", "");
+		}
+		else {
+			session.setAttribute("indeedSelected", "");
+			session.setAttribute("nationaleVacaturebankSelected", "");
+			session.setAttribute("monsterboardSelected", "selected=\"selected\"");
+		}
+	}
+	
+	// Returns a list of headers for the html table.
 	private static ArrayList<String> getHeaders() {
 		ArrayList<String> headers = new ArrayList<>();
 		headers.add("Vacancy ID");

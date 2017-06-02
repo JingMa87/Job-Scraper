@@ -13,9 +13,9 @@
 			<!-- A drop down menu where you can pick a job search engine. -->
 			<p>Pick a job search engine to scrape:</p>
 			<select name="searchEngine">
-				<option value="indeed">Indeed</option>
-				<option value="nationaleVacaturebank">Nationale Vacaturebank</option>
-				<option value="monsterboard">Monsterboard</option>
+				<option value="indeed" ${indeedSelected}>Indeed</option>
+				<option value="nationaleVacaturebank" ${nationaleVacaturebankSelected}>Nationale Vacaturebank</option>
+				<option value="monsterboard" ${monsterboardSelected}>Monsterboard</option>
 			</select>
 			<br>
 			<!-- Input fields for filling in a job title and location + a submit button. -->
