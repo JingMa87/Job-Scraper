@@ -21,9 +21,6 @@ public class NationaleVacaturebankScraper {
 		DBConnection.resetTable();
 		// Initializes a web driver with a website.
 		WebDriver driver = initWebDriver("https://www.nationalevacaturebank.nl");
-//		// If there's a cookie message, it'll be clicked.
-//		if (driver.findElements(By.cssSelector("#form_save")).size() != 0)
-//			driver.findElement(By.cssSelector("#form_save")).click();
 		// Waits for the cookie message to appear and then clicks it.
 		WebDriverWait wait = new WebDriverWait(driver, 3000);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#form_save"))).click();

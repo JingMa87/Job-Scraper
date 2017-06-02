@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 import com.wixsite.jingmacv.model.DBConnection;
 import com.wixsite.jingmacv.model.MonsterboardScraper;
 import com.wixsite.jingmacv.model.NationaleVacaturebankScraper;
-import com.wixsite.jingmacv.model.WebScraper;
+import com.wixsite.jingmacv.model.IndeedScraper;
 
 @WebServlet("/web-scrape")
 public class WebScrapeServlet extends HttpServlet {
@@ -36,7 +36,7 @@ public class WebScrapeServlet extends HttpServlet {
 			else {
 				String searchEngine = request.getParameter("searchEngine");
 				if (searchEngine.equals("indeed")) {
-					status = WebScraper.scrape(jobTitle, location);
+					status = IndeedScraper.scrape(jobTitle, location);
 				}
 				else if (searchEngine.equals("nationaleVacaturebank")) {
 					status = NationaleVacaturebankScraper.scrape(jobTitle, location);

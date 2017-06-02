@@ -11,7 +11,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 /*
  * A web scraper class with one public function called scrape().
  */
-public class WebScraper {
+public class IndeedScraper {
 	
 	// The main function of this class which scrapes a website for vacancy data.
 	public static String scrape(String jobTitleInput, String locationInput) {
@@ -62,7 +62,6 @@ public class WebScraper {
 			}
 			// Retrieves a list of vacancies, each containing a job title, company and location.
 			List<WebElement> list = driver.findElements(By.cssSelector(".result"));
-			System.out.println("Size: " + list.size());
 			// Loops over the vacancies.
 			for (WebElement item : list) {
 				WebElement jobTitleTag = null;
@@ -94,7 +93,6 @@ public class WebScraper {
 			}
 			if (status.equals("noData") || driver.findElements(By.partialLinkText("Volgende")).size() == 0)
 				break;
-			System.out.println("Click next!!! Page: " + pageCount);
 			// Clicks on "next" and on overlays.
 			clickNext(driver);
 		}
