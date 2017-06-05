@@ -27,9 +27,6 @@ public class WebScrapeServlet extends HttpServlet {
 		String location = request.getParameter("location");
 		String status = null;
 		session = request.getSession();
-		// Show the table in webScrape.jsp.
-		boolean scraped = true;
-		request.setAttribute("scraped", scraped);
 		
 		if (jobTitle != null && location != null) {
 			if (jobTitle.equals("") || location.equals("")) {
@@ -48,8 +45,11 @@ public class WebScrapeServlet extends HttpServlet {
 					status = MonsterboardScraper.scrape(jobTitle, location);
 				}
 				// Checks if the scraping was successful.
-				if (status == "saved") {
+				if (status.equals("saved")) {
 					request.setAttribute("successScrape", "Successfully scraped.");
+					// Show the table in webScrape.jsp.
+					boolean scraped = true;
+					request.setAttribute("scraped", scraped);
 				}
 				else {
 					request.setAttribute("noData", "No data has been scraped.");

@@ -35,10 +35,10 @@
 		<!-- Status and error messages. -->
 		<p style="color:red;">${emptyField}</p>
 		<p style="color:green;">${successScrape}</p>
-		<p style="color:red;">${databaseError}</p>
+		<p style="color:red;">${noData}</p>
 		<p style="color:green;">${xmlDownloaded}</p>
 		<p style="color:green;">${pdfDownloaded}</p>
-		<p style="color:red;">${documentError}</p>
+		<p style="color:red;">${documentError}</p>		
 		
 		<!-- Table with web scraped data on vacancies. -->
 		<c:if test="${scraped}">
