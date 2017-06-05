@@ -7,6 +7,7 @@
 	</head>
 	<body>				 
 		<h1>Web Scraper</h1>
+		<p>Welcome, ${username}!</p>
 		
 		<!-- Form for web scraping job vacancies. -->
 		<form action="web-scrape" method="get">
@@ -27,8 +28,8 @@
 		<!-- Buttons to generate XML and PDF documents. -->
 		<p>Download the data:</p>
 		<form action="generate-document" method="get">
-			<button name="generate" value="XML" type="submit">XML</button>
-			<button name="generate" value="PDF" type="submit">PDF</button><br>
+			<button name="doc" value="XML" type="submit">XML</button>
+			<button name="doc" value="PDF" type="submit">PDF</button><br>
 		</form>
 		
 		<!-- Status and error messages. -->

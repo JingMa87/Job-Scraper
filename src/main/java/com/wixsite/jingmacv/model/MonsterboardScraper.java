@@ -18,80 +18,33 @@ public class MonsterboardScraper extends WebScraper {
 		// Initializes a web driver with a website.
 		init("https://www.monsterboard.nl");
 		// Finds and fills in input fields with a job title and location.
-		fillInSearchTerms(jobTitleInput, locationInput);
+		fillInSearchTerms(jobTitleInput, locationInput, "#q1", "#where1", "#doQuickSearch");
 		// Waits for the cookie message to appear and then clicks it.
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.fa-times"))).click();
 		// Loops over all pages and saves the job title, company and location in the database.
-		String status = findAndSaveAllVacancies();
+		String status = loopOverAllPages();
 		// Close browser.
 		driver.close();
 		return status;
 	}
 	
-	private static void fillInSearchTerms(String jobTitleInput, String locationInput) {
-		// Finds and fills in input field "what".
-		WebElement input = driver.findElement(By.cssSelector("#q1"));
-		input.sendKeys(jobTitleInput);
-		// Finds and fills in input field "where".
-		input = driver.findElement(By.cssSelector("#where1"));
-		input.sendKeys(locationInput);
-		// Finds and submits the web form.
-		WebElement submit = driver.findElement(By.cssSelector("#doQuickSearch"));
-		submit.click();
-	}
-	
-	private static String findAndSaveAllVacancies() {
-		String status = null;
-		int pageCount = 0;
-		// Loops over all pages and saves the job title, company and location in the database.
+	private static String loopOverAllPages() {
+		String status = "";
+		// Loops over all the pages.
 		while (true) {
-			pageCount++;
 			// Retrieves a list of vacancies, each containing a job title, company and location.
 			List<WebElement> list = driver.findElements(By.cssSelector(".js_result_container.primary"));
-			// Loops over the vacancies.
-			for (WebElement item : list) {
-				WebElement jobTitleTag = null;
-				WebElement companyTag = null;
-				WebElement locationTag = null;
-				String jobTitle = null;
-				String company = null;
-				String location = null;
-				// Finds the job title, company and location per vacancy.
-				if (item.findElements(By.cssSelector(".jobTitle")).size() != 0) {
-					jobTitleTag = item.findElement(By.cssSelector(".jobTitle"));
-					jobTitle = jobTitleTag.getText();
-				}
-				if (item.findElements(By.cssSelector(".company")).size() != 0) {
-					companyTag = item.findElement(By.cssSelector(".company"));
-					company = companyTag.getText();
-				}
-				if (item.findElements(By.cssSelector(".job-specs-location")).size() != 0) {
-					locationTag = item.findElement(By.cssSelector(".job-specs-location"));
-					location = locationTag.getText();
-				}
-				// If the company is unknown the user would still want to apply to the job.
-				if (jobTitle != null && location != null)
-					// Saves the vacancies in the database.
-					status = DBConnection.saveVacancy(jobTitle, company, location + ", " + pageCount);
-					if (status.equals("noData"))
-						break;
-				
+			// Loops over the list.
+			for (WebElement vacancy : list) {
+				status = findAndSaveVacancyInfo(vacancy, ".jobTitle", ".company", ".job-specs-location");
+				if (status.equals("noData"))
+					break;
 			}
 			if (status.equals("noData") || driver.findElements(By.cssSelector(".next")).size() == 0)
 				break;
-			// Clicks on "next" and on overlays.
-			clickNext();
+			// Waits for the "next" button to appear and then clicks it.
+			wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".next"))).click();
 		}
 		return status;
-	}
-	
-	private static void clickNext() {
-		// Checks for layover and clicks it if it exists.
-		WebElement layover = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".popup-close-icon")));
-		if (layover.isDisplayed()) {
-			layover.click();
-		}
-		// Waits for the "next" button to appear and then clicks it.
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".next"))).click();
 	}
 }

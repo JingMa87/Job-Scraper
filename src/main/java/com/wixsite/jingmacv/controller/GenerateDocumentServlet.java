@@ -18,7 +18,7 @@ public class GenerateDocumentServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Checks for the type of button pressed (XML or PDF) and generates the document.
-		String documentType = request.getParameter("generate");
+		String documentType = request.getParameter("doc");
 		if (documentType.equals("XML")) {
 			XMLGenerator.generateXML();
 			request.setAttribute("xmlDownloaded", "XML successfully downloaded.");

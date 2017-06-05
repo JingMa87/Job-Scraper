@@ -4,6 +4,7 @@
   <welcome-file-list>
     <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>
+  
   <jsp-config>
     <jsp-property-group>
       <url-pattern>*.jsp</url-pattern>

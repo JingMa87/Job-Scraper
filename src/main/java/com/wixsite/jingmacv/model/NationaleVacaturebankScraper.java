@@ -3,7 +3,6 @@ package com.wixsite.jingmacv.model;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
@@ -21,99 +20,34 @@ public class NationaleVacaturebankScraper extends WebScraper {
 		// Waits for the cookie message to appear and then clicks it.
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#form_save"))).click();
 		// Finds and fills in input fields with a job title and location.
-		fillInSearchTerms(jobTitleInput, locationInput);
+		fillInSearchTerms(jobTitleInput, locationInput, ".form-group input.ng-empty", ".search-location-group input.ng-empty", ".search-button button");
 		// Loops over all pages and saves the job title, company and location in the database.
-		String status = findAndSaveAllVacancies();
+		String status = loopOverAllPages();
 		// Close browser.
 		driver.close();
 		return status;
 	}
 	
-	private static void fillInSearchTerms(String jobTitleInput, String locationInput) {
-		// Finds and fills in input field "what".
-		WebElement input = driver.findElement(By.cssSelector(".form-group input.ng-empty"));
-		input.sendKeys(jobTitleInput);
-		// Finds and fills in input field "where".
-		input = driver.findElement(By.cssSelector(".search-location-group input.ng-empty"));
-		input.sendKeys(locationInput);
-		// Finds and submits the web form.
-		WebElement submit = driver.findElement(By.cssSelector(".search-button button"));
-		submit.click();
-	}
-	
-	private static String findAndSaveAllVacancies() {
-		String status = null;
-		int pageCount = 0;
-		// Loops over all pages and saves the job title, company and location in the database.
+	private static String loopOverAllPages() {
+		String status = "";
+		// Loops over all the pages.
 		while (true) {
-			pageCount++;
-			// To prevent loading vacancies of the previous page.
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			// Prevents loading vacancies of the previous page.
+			sleep(2);
 			// Retrieves a list of vacancies, each containing a job title, company and location.
 			List<WebElement> list = driver.findElements(By.cssSelector("div[data-ng-repeat='job in jobPage.jobs track by $index']"));
-			// Loops over the vacancies.
-			for (WebElement item : list) {
-				WebElement jobTitleTag = null;
-				WebElement companyTag = null;
-				WebElement locationTag = null;
-				String jobTitle = null;
-				String company = null;
-				String location = null;
-				// Finds the job title, company and location per vacancy.
-				if (item.findElements(By.cssSelector(".job-title")).size() != 0) {
-					jobTitleTag = item.findElement(By.cssSelector(".job-title"));
-					jobTitle = jobTitleTag.getText();
-				}
-				if (item.findElements(By.cssSelector(".name")).size() != 0) {
-					companyTag = item.findElement(By.cssSelector(".name"));
-					company = companyTag.getText();
-				}
-				if (item.findElements(By.cssSelector(".working-location span")).size() != 0) {
-					locationTag = item.findElement(By.cssSelector(".working-location span"));
-					location = locationTag.getText();
-				}
-				// If the company is unknown the user would still want to apply to the job.
-				if (jobTitle != null && location != null)
-					// Saves the vacancies in the database.
-					status = DBConnection.saveVacancy(jobTitle, company, location + ", " + pageCount);
-					if (status.equals("noData"))
-						break;
-				
+			// Loops over the list.
+			for (WebElement vacancy : list) {
+				status = findAndSaveVacancyInfo(vacancy, ".job-title", ".name", ".working-location span");
+				if (status.equals("noData"))
+					break;				
 			}
 			if (status.equals("noData") || driver.findElements(By.cssSelector("li .arrow")).size() == 0 
 				|| driver.findElement(By.cssSelector("ul.pagination li[data-ng-show='currentPageNumber < totalNumberOfPages']")).getAttribute("class").equals("ng-hide"))
 				break;
-			// Clicks on "next" and on overlays.
-			clickNext();
+			// If there's a "next" button, it'll be clicked.
+			driver.findElements(By.cssSelector("li .arrow")).get(1).click();
 		}
 		return status;
-	}
-	
-	private static void clickNext() {
-		// If there's a "next" button, it'll be clicked.
-		retryClick(By.cssSelector("li .arrow"));
-		// If there's an overlay, it'll be clicked.
-		if (driver.findElements(By.cssSelector("#popover-close-link")).size() != 0)
-			driver.findElement(By.cssSelector("#popover-close-link")).click();		
-	}
-	
-	private static boolean retryClick(By by) {
-        boolean result = false;
-        int attempts = 0;
-        while (attempts < 2) {
-            try {
-                driver.findElements(by).get(1).click();
-                result = true;
-                break;
-            } catch (StaleElementReferenceException e) {
-            	e.printStackTrace();
-            }
-            attempts++;
-        }
-        return result;
 	}
 }
