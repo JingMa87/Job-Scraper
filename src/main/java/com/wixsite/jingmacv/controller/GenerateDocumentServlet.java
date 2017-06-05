@@ -30,6 +30,8 @@ public class GenerateDocumentServlet extends HttpServlet {
 		else {
 			request.setAttribute("documentError", "Something went wrong.");
 		}
+		// Show the table in webScrape.jsp.
+		request.setAttribute("scraped", true);
 		// Puts the job title and location in the input fields.
 		request.getRequestDispatcher("web-scrape").forward(request, response);
 	}

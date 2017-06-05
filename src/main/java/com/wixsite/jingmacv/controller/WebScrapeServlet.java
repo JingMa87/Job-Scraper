@@ -48,8 +48,7 @@ public class WebScrapeServlet extends HttpServlet {
 				if (status.equals("saved")) {
 					request.setAttribute("successScrape", "Successfully scraped.");
 					// Show the table in webScrape.jsp.
-					boolean scraped = true;
-					request.setAttribute("scraped", scraped);
+					request.setAttribute("scraped", true);
 				}
 				else {
 					request.setAttribute("noData", "No data has been scraped.");
