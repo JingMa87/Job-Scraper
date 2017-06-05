@@ -3,46 +3,32 @@ package com.wixsite.jingmacv.model;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 /*
  * A web scraper class with one public function called scrape().
  */
-public class MonsterboardScraper {
-	
-	private static WebDriverWait wait;
+public class MonsterboardScraper extends WebScraper {
 	
 	// The main function of this class which scrapes a website for vacancy data.
 	public static String scrape(String jobTitleInput, String locationInput) {
 		// Resets the data in the jbs_vacancy table.
 		DBConnection.resetTable();
 		// Initializes a web driver with a website.
-		WebDriver driver = initWebDriver("https://www.monsterboard.nl");
+		init("https://www.monsterboard.nl");
 		// Finds and fills in input fields with a job title and location.
-		fillInSearchTerms(driver, jobTitleInput, locationInput);
+		fillInSearchTerms(jobTitleInput, locationInput);
 		// Waits for the cookie message to appear and then clicks it.
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.fa-times"))).click();
 		// Loops over all pages and saves the job title, company and location in the database.
-		String status = findAndSaveAllVacancies(driver);
+		String status = findAndSaveAllVacancies();
 		// Close browser.
 		driver.close();
 		return status;
 	}
 	
-	private static WebDriver initWebDriver(String url) {
-		System.setProperty("webdriver.chrome.driver", "C:/Program Files (x86)/chromedriver_win32/chromedriver.exe");
-		WebDriver driver = new ChromeDriver();
-		driver.manage().window().maximize();
-		driver.get(url);
-		wait = new WebDriverWait(driver, 3000);
-		return driver;
-	}
-	
-	private static void fillInSearchTerms(WebDriver driver, String jobTitleInput, String locationInput) {
+	private static void fillInSearchTerms(String jobTitleInput, String locationInput) {
 		// Finds and fills in input field "what".
 		WebElement input = driver.findElement(By.cssSelector("#q1"));
 		input.sendKeys(jobTitleInput);
@@ -54,7 +40,7 @@ public class MonsterboardScraper {
 		submit.click();
 	}
 	
-	private static String findAndSaveAllVacancies(WebDriver driver) {
+	private static String findAndSaveAllVacancies() {
 		String status = null;
 		int pageCount = 0;
 		// Loops over all pages and saves the job title, company and location in the database.
@@ -94,12 +80,12 @@ public class MonsterboardScraper {
 			if (status.equals("noData") || driver.findElements(By.cssSelector(".next")).size() == 0)
 				break;
 			// Clicks on "next" and on overlays.
-			clickNext(driver);
+			clickNext();
 		}
 		return status;
 	}
 	
-	private static void clickNext(WebDriver driver) {
+	private static void clickNext() {
 		// Checks for layover and clicks it if it exists.
 		WebElement layover = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".popup-close-icon")));
 		if (layover.isDisplayed()) {

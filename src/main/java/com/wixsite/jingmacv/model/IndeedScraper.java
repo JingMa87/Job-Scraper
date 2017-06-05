@@ -4,39 +4,29 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 /*
  * A web scraper class with one public function called scrape().
  */
-public class IndeedScraper {
+public class IndeedScraper extends WebScraper {
 	
 	// The main function of this class which scrapes a website for vacancy data.
 	public static String scrape(String jobTitleInput, String locationInput) {
 		// Resets the data in the jbs_vacancy table.
 		DBConnection.resetTable();
 		// Initializes a web driver with a website.
-		WebDriver driver = initWebDriver("https://www.indeed.nl/?r=us");
+		init("https://www.indeed.nl/?r=us");
 		// Finds and fills in input fields with a job title and location.
-		fillInSearchTerms(driver, jobTitleInput, locationInput);
+		fillInSearchTerms(jobTitleInput, locationInput);
 		// Loops over all pages and saves the job title, company and location in the database.
-		String status = findAndSaveAllVacancies(driver);
+		String status = findAndSaveAllVacancies();
 		// Close browser.
 		driver.close();
 		return status;
 	}
 	
-	private static WebDriver initWebDriver(String url) {
-		System.setProperty("webdriver.chrome.driver", "C:/Program Files (x86)/chromedriver_win32/chromedriver.exe");
-		WebDriver driver = new ChromeDriver();
-		driver.manage().window().maximize();
-		driver.get(url);
-		return driver;
-	}
-	
-	private static void fillInSearchTerms(WebDriver driver, String jobTitleInput, String locationInput) {
+	private static void fillInSearchTerms(String jobTitleInput, String locationInput) {
 		// Finds and fills in input field "what".
 		WebElement input = driver.findElement(By.cssSelector("#what"));
 		input.sendKeys(jobTitleInput);
@@ -48,7 +38,7 @@ public class IndeedScraper {
 		submit.click();
 	}
 	
-	private static String findAndSaveAllVacancies(WebDriver driver) {
+	private static String findAndSaveAllVacancies() {
 		String status = null;
 		int pageCount = 0;
 		// Loops over all pages and saves the job title, company and location in the database.
@@ -94,15 +84,15 @@ public class IndeedScraper {
 			if (status.equals("noData") || driver.findElements(By.partialLinkText("Volgende")).size() == 0)
 				break;
 			// Clicks on "next" and on overlays.
-			clickNext(driver);
+			clickNext();
 		}
 		return status;
 	}
 	
-	private static void clickNext(WebDriver driver) {
+	private static void clickNext() {
 		// If there's a "next" button, it'll be clicked.
 		if (driver.findElements(By.partialLinkText("Volgende")).size() != 0)
-			retryClick(driver, By.partialLinkText("Volgende"));
+			retryClick(By.partialLinkText("Volgende"));
 		// If there's an overlay, it'll be clicked.
 		if (driver.findElements(By.cssSelector("#popover-close-link")).size() != 0)
 			driver.findElement(By.cssSelector("#popover-close-link")).click();
@@ -111,7 +101,7 @@ public class IndeedScraper {
 			driver.findElement(By.cssSelector("#cookie-alert-ok")).click();		
 	}
 	
-	private static boolean retryClick(WebDriver driver, By by) {
+	private static boolean retryClick(By by) {
         boolean result = false;
         int attempts = 0;
         while (attempts < 2) {
