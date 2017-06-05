@@ -1,6 +1,6 @@
 # README
 
-<img src="http://xaharts.org/funny/i/gitopuss/github-octocat_yes-we-code.jpg" width="400">
+<img src="https://github.com/JingMa87/Job-Scraper/blob/master/img/Octocat%20Obama.jpg" width="400">
 
 This is a web application that I'm building using Java EE, JSP, servlets, MVC, Maven and Selenium. 
 I'm experimenting with different technologies so as to achieve a broad knowledge about what tools are being used right now.
