@@ -32,10 +32,7 @@ public class IndeedScraper extends WebScraper {
 	 * Loops over all the pages and finds the vacancies.
 	 */
 	private static String loopOverAllPages() {
-		String status = "";		
-		// Exits the function if there's no vacancies.
-		if (driver.findElements(By.cssSelector(".no_results")).size() != 0)
-			return status = "noData";
+		String status = "";
 		// Loops over all the pages.
 		while (true) {
 			// Prevents loading vacancies of the previous page.
