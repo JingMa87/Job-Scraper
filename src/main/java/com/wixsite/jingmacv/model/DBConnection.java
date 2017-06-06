@@ -1,7 +1,6 @@
 package com.wixsite.jingmacv.model;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,24 +8,28 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 public class DBConnection {
 
-	// JDBC database URL.
-	private final String DB_URL = "jdbc:oracle:thin:jing/jing@localhost:1521:xe";
 	// Connection objects.
 	private static Connection conn;
 	private static Statement stmt;
-	private static PreparedStatement ppsm;
+	private static PreparedStatement pstmt;
 	private static ResultSet rs;
 	
 	public DBConnection() {
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-	    	conn = DriverManager.getConnection(DB_URL);
+			Context context = new InitialContext();
+			DataSource ds = (DataSource) context.lookup("java:comp/env/ds");
+	    	conn = ds.getConnection();
 	    	stmt = conn.createStatement();
 	    } catch (SQLException se) {
 	    	se.printStackTrace();
-	    } catch (ClassNotFoundException e) {
+	    } catch (NamingException e) {
 			e.printStackTrace();
 		}
 	}
@@ -39,9 +42,9 @@ public class DBConnection {
     	
 	    try {
 	    	// Query.
-	    	ppsm = conn.prepareStatement("SELECT username, password FROM jbs_user WHERE username = ?");
-	    	ppsm.setString(1, username);
-	    	rs = ppsm.executeQuery();
+	    	pstmt = conn.prepareStatement("SELECT username, password FROM jbs_user WHERE username = ?");
+	    	pstmt.setString(1, username);
+	    	rs = pstmt.executeQuery();
 	    	// Loops over database rows.
 	    	while (rs.next()) {
 	    		dbUsername = rs.getString("username");
@@ -51,11 +54,11 @@ public class DBConnection {
 	    		return match;
 	    	match = username.equals(dbUsername) && BCrypt.checkpw(password, dbPassword);
 		    if (match) {
-		    	ppsm = conn.prepareStatement("INSERT INTO jbs_login_audit (id, time, dba_user, user_id)" +
+		    	pstmt = conn.prepareStatement("INSERT INTO jbs_login_audit (id, time, dba_user, user_id)" +
 		    						   "VALUES ((SELECT NVL(MAX(id) + 1, 1) FROM jbs_login_audit), TO_CHAR(SYSDATE, 'DD/MM/YYYY HH:MI:SSAM')," + 
 		    						   "(SELECT USER FROM dual), (SELECT id FROM jbs_user WHERE username = ?))");
-		    	ppsm.setString(1, username);
-		    	ppsm.executeUpdate();
+		    	pstmt.setString(1, username);
+		    	pstmt.executeUpdate();
 		    }
 	    } catch (SQLException se) {
 	    	se.printStackTrace();
@@ -72,15 +75,15 @@ public class DBConnection {
 			password = BCrypt.hashpw(password, BCrypt.gensalt());
 	    	
 	    	// Insert username and password into database.
-	    	ppsm = conn.prepareStatement("INSERT INTO jbs_user (id, username, password) VALUES ((SELECT NVL(MAX(id) + 1, 1) FROM jbs_user), ?, ?)");
-	    	ppsm.setString(1, username);
-	    	ppsm.setString(2, password);
-	    	ppsm.executeUpdate();
+	    	pstmt = conn.prepareStatement("INSERT INTO jbs_user (id, username, password) VALUES ((SELECT NVL(MAX(id) + 1, 1) FROM jbs_user), ?, ?)");
+	    	pstmt.setString(1, username);
+	    	pstmt.setString(2, password);
+	    	pstmt.executeUpdate();
 	    	
-	    	ppsm = conn.prepareStatement("INSERT INTO jbs_register_audit (id, time, dba_user) VALUES " +
+	    	pstmt = conn.prepareStatement("INSERT INTO jbs_register_audit (id, time, dba_user) VALUES " +
 	    	"((SELECT id FROM jbs_user WHERE username = ?), TO_CHAR(SYSDATE, 'DD/MM/YYYY HH:MI:SSAM'), (SELECT USER FROM dual))");
-			ppsm.setString(1, username);
-			ppsm.executeUpdate();
+			pstmt.setString(1, username);
+			pstmt.executeUpdate();
 	    	status = "registered";
 	    } catch (SQLIntegrityConstraintViolationException se) {
 	    	status = "uniqueConstraint"; 
@@ -154,8 +157,8 @@ public class DBConnection {
     		se.printStackTrace();
     	}
 		try {
-    		if (ppsm != null)
-    			ppsm.close();
+    		if (pstmt != null)
+    			pstmt.close();
     	} catch (SQLException se) {
     		se.printStackTrace();
     	}

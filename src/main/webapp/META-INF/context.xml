@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
+<Context>
+  	<Resource name="ds" 
+  			  auth="Container" 
+  			  type="javax.sql.DataSource"
+              username="jing" 
+              password="jing" 
+              driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@localhost:1521:xe"/>
+
+	<!-- maxTotal: Maximum number of database connections in pool. Make sure you
+         configure your mysqld max_connections large enough to handle
+         all of your db connections. Set to -1 for no limit. -->
+
+    <!-- maxIdle: Maximum number of idle database connections to retain in pool.
+         Set to -1 for no limit.  See also the DBCP documentation on this
+         and the minEvictableIdleTimeMillis configuration parameter. -->
+
+    <!-- maxWaitMillis: Maximum time to wait for a database connection to become available
+         in ms, in this example 10 seconds. An Exception is thrown if
+         this timeout is exceeded.  Set to -1 to wait indefinitely. -->
+</Context>

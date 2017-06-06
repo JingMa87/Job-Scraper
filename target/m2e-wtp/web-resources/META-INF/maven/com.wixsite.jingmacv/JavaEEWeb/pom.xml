@@ -3,11 +3,11 @@
 	
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.wixsite.jingmacv</groupId>
-	<artifactId>JavaEEWeb</artifactId>
+	<artifactId>JobScraper</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	
-	<name>JavaEEWeb Maven Webapp</name>
+	<name>Job Scraper</name>
 	<url>http://maven.apache.org</url>
 	
 	<dependencies>
@@ -68,7 +68,7 @@
 	</dependencies>
 		
 	<build>
-		<finalName>JavaEEWeb</finalName>
+		<finalName>Job Scraper</finalName>
 
 		<plugins>
 		    <!-- Eclipse project -->
@@ -92,15 +92,6 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
-				</configuration>
-			</plugin>
-	
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<path>/JavaEEWeb</path>
 				</configuration>
 			</plugin>
 		</plugins>
