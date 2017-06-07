@@ -16,7 +16,7 @@ public class IndeedScraper extends WebScraper {
 	 */
 	public static String scrape(String jobTitleInput, String locationInput) {
 		// Resets the data in the jbs_vacancy table.
-		DBConnection.resetTable();
+		resetTable();
 		// Initializes a web driver with a website.
 		init("https://www.indeed.nl/?r=us");
 		// Finds and fills in input fields with a job title and location.

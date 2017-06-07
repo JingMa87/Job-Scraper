@@ -36,7 +36,7 @@ public class PDFGenerator {
             cell = new PdfPCell(new Phrase("Location", bold));
             table.addCell(cell);
 	        
-	        ArrayList<Vacancy> vacancies = DBConnection.getResultSet();
+	        ArrayList<Vacancy> vacancies = WebScraper.getVacancies();
 	        for (Vacancy vacancy : vacancies) {
 	        	int vacancy_id = vacancy.getVacancyID();
 	        	cell = new PdfPCell(new Phrase(Integer.toString(vacancy_id)));

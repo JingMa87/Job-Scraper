@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.wixsite.jingmacv.model.DBConnection;
+import com.wixsite.jingmacv.model.Register;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
@@ -19,7 +19,7 @@ public class RegisterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String username = request.getParameter("username").trim();
 		String password = request.getParameter("password").trim();
-		String status = DBConnection.registerUsernamePassword(username, password);
+		String status = Register.registerUsernamePassword(username, password);
 	    if (status == "registered") {
 	    	HttpSession session = request.getSession();
 	    	session.setAttribute("username", username);
@@ -27,11 +27,10 @@ public class RegisterServlet extends HttpServlet {
 	    }
 	    else if (status == "uniqueConstraint") {
 	    	request.setAttribute("uniqueConstraint", "Username already exists.");
-	    	request.getRequestDispatcher("WEB-INF/view/register.jsp").forward(request, response);
 	    }
 	    else {
 	    	request.setAttribute("incorrectUsernamePassword", "Enter a correct username and password.");
-	    	request.getRequestDispatcher("WEB-INF/view/register.jsp").forward(request, response);
 	    }
+    	request.getRequestDispatcher("WEB-INF/view/register.jsp").forward(request, response);
 	}
 }

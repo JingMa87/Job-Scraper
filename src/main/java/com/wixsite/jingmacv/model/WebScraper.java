@@ -1,5 +1,9 @@
 package com.wixsite.jingmacv.model;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -10,11 +14,29 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 /*
  * Abstract superclass that initializes shared objects and functions. 
  */
-public abstract class WebScraper {
+public abstract class WebScraper extends DBUtil {
 
 	public static WebDriver driver;
 	public static WebDriverWait wait;
 	public static JavascriptExecutor js;
+	
+	/*
+	 * Resets the jbs_vacancy table.
+	 */
+	public static void resetTable() {
+		// Deletes all data from the jbs_vacancy table.
+		try {
+			conn = DBUtil.getConn();
+			stmt = conn.createStatement();
+			stmt.executeQuery("DELETE FROM jbs_vacancy");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+	    	// Closes all transaction objects.
+		    DBUtil.close(stmt);
+		    DBUtil.close(conn);
+	    }
+	}
 
 	/*
 	 * Initializes a Chrome web driver that represents a website DOM. 
@@ -68,7 +90,33 @@ public abstract class WebScraper {
 		// If the company is unknown the user would still want to apply to the job.
 		if (jobTitle != null && location != null)
 			// Saves the vacancies in the database.
-			status = DBConnection.saveVacancy(jobTitle, company, location);
+			status = saveVacancy(jobTitle, company, location);
+		return status;
+	}
+	
+	// Adds a vacancy object to the database.
+	public static String saveVacancy(String jobTitle, String company, String location) {
+		String status = null;
+		try {
+			// Insert vacancy into database.
+	    	conn = DBUtil.getConn();
+	    	pstmt = conn.prepareStatement("INSERT INTO jbs_vacancy (id, job_title, company, location) " +
+	    								 "VALUES ((SELECT NVL(MAX(id) + 1, 1) FROM jbs_vacancy), ?, ?, ?)");
+	    	pstmt.setString(1, jobTitle);
+	    	pstmt.setString(2, company);
+	    	pstmt.setString(3, location);
+	    	pstmt.executeUpdate();
+	    	status = "saved";
+	    } catch (SQLIntegrityConstraintViolationException se) {
+	    	se.printStackTrace();
+	    } catch (SQLException se) {
+	    	status = "noData";
+	    	se.printStackTrace();
+	    } finally {
+	    	// Closes all transaction objects.
+		    DBUtil.close(pstmt);
+		    DBUtil.close(conn);
+	    }
 		return status;
 	}
 	
@@ -82,5 +130,31 @@ public abstract class WebScraper {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/*
+	 * Returns all the vacancies in ArrayList format.
+	 */
+	public static ArrayList<Vacancy> getVacancies() {
+		ArrayList<Vacancy> vacancies = new ArrayList<>();
+		try {
+	    	// Retrieves vacancy objects into the ResultSet.
+	    	String sqlGetData = "SELECT id, job_title, company, location FROM jbs_vacancy ORDER BY id";
+	    	conn = DBUtil.getConn();
+	    	stmt = conn.createStatement();
+	    	rs = stmt.executeQuery(sqlGetData);
+	    	while (rs.next()) {
+	            Vacancy vacancy = new Vacancy(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+	            vacancies.add(vacancy);
+	    	}
+	    } catch (SQLException se) {
+	    	se.printStackTrace();
+	    } finally {
+	    	// Closes all transaction objects.
+		    DBUtil.close(rs);
+		    DBUtil.close(stmt);
+		    DBUtil.close(conn);
+	    }
+		return vacancies;
 	}
 }

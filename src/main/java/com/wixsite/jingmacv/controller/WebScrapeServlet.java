@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.wixsite.jingmacv.model.DBConnection;
+import com.wixsite.jingmacv.model.IndeedScraper;
 import com.wixsite.jingmacv.model.MonsterboardScraper;
 import com.wixsite.jingmacv.model.NationaleVacaturebankScraper;
-import com.wixsite.jingmacv.model.IndeedScraper;
+import com.wixsite.jingmacv.model.WebScraper;
 
-@WebServlet("/web-scrape")
+@WebServlet("/webScrape")
 public class WebScrapeServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -58,14 +58,14 @@ public class WebScrapeServlet extends HttpServlet {
 		// Makes a list of headers to generate table headers in webScrape.jsp.
 		request.setAttribute("headers", getHeaders());
 		// Retrieves vacancy data from the database and makes it available as a list in webScrape.jsp.
-		request.setAttribute("vacancies", DBConnection.getResultSet());
+		request.setAttribute("vacancies", WebScraper.getVacancies());
 		// Set values for the input fields.
 		if (jobTitle != null && location != null) {
 	    	session.setAttribute("jobTitle", jobTitle);
 	    	session.setAttribute("location", location);
 		}
 		// Redirects user to index.jsp.
-		request.getRequestDispatcher("WEB-INF/view/webScrape.jsp").forward(request, response);
+		request.getRequestDispatcher("WEB-INF/view/webScraper.jsp").forward(request, response);
     }
 	
 	@Override

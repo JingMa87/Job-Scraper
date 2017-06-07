@@ -14,7 +14,7 @@ public class MonsterboardScraper extends WebScraper {
 	// The main function of this class which scrapes a website for vacancy data.
 	public static String scrape(String jobTitleInput, String locationInput) {
 		// Resets the data in the jbs_vacancy table.
-		DBConnection.resetTable();
+		resetTable();
 		// Initializes a web driver with a website.
 		init("https://www.monsterboard.nl");
 		// Finds and fills in input fields with a job title and location.

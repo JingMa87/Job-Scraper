@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.wixsite.jingmacv.model.PDFGenerator;
 import com.wixsite.jingmacv.model.XMLGenerator;
 
-@WebServlet("/generate-document")
+@WebServlet("/generateDocument")
 public class GenerateDocumentServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -33,7 +33,7 @@ public class GenerateDocumentServlet extends HttpServlet {
 		// Show the table in webScrape.jsp.
 		request.setAttribute("scraped", true);
 		// Puts the job title and location in the input fields.
-		request.getRequestDispatcher("web-scrape").forward(request, response);
+		request.getRequestDispatcher("webScrape").forward(request, response);
 	}
 
 }

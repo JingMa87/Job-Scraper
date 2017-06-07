@@ -10,7 +10,7 @@
 		<p>Welcome, ${username}!</p>
 		
 		<!-- Form for web scraping job vacancies. -->
-		<form action="web-scrape" method="get">
+		<form action="webScrape" method="get">
 			<!-- A drop down menu where you can pick a job search engine. -->
 			<p>Pick a job search engine to scrape:</p>
 			<select name="searchEngine">
@@ -27,7 +27,7 @@
 		</form>	
 		<!-- Buttons to generate XML and PDF documents. -->
 		<p>Download the data:</p>
-		<form action="generate-document" method="get">
+		<form action="generateDocument" method="get">
 			<button name="doc" value="XML" type="submit">XML</button>
 			<button name="doc" value="PDF" type="submit">PDF</button><br>
 		</form>
