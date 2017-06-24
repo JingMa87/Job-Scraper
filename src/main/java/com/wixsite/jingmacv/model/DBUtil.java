@@ -12,7 +12,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 /*
- * This class provides database variables and methods for other classes.
+ * This class provides database variables and methods for other classes..
  */
 public abstract class DBUtil {
 	
